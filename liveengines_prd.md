@@ -1,6 +1,6 @@
-# PRD — Apolo
+# PRD — LiveEngines
 
-**Producto:** Apolo  
+**Producto:** LiveEngines  
 **Tipo:** Servicio / plataforma de experiencias técnicas interactivas para web  
 **Estado:** Definición inicial  
 **Versión:** 0.1  
@@ -10,11 +10,11 @@
 
 ## 1. Resumen
 
-Apolo es un proyecto independiente orientado a crear **experiencias técnicas interactivas para empresas de ingeniería, industria, minería, infraestructura, energía, ciencia y sectores relacionados**.
+LiveEngines es un proyecto independiente orientado a crear **experiencias técnicas interactivas para empresas de ingeniería, industria, minería, infraestructura, energía, ciencia y sectores relacionados**.
 
 La propuesta no consiste en vender modelado 3D hiperrealista ni desarrollar videojuegos industriales.
 
-Apolo transforma información técnica, procesos, sistemas, productos y conceptos complejos en **experiencias web interactivas que permiten comprenderlos, explorarlos y explicarlos visualmente**.
+LiveEngines transforma información técnica, procesos, sistemas, productos y conceptos complejos en **experiencias web interactivas que permiten comprenderlos, explorarlos y explicarlos visualmente**.
 
 La tecnología principal será la visualización interactiva en navegador, utilizando 3D, animación, simulación, datos y narrativa técnica cuando aporten valor.
 
@@ -22,7 +22,7 @@ La tecnología principal será la visualización interactiva en navegador, utili
 
 > **No buscamos representar cada tornillo. Buscamos representar correctamente el sistema, el proceso o el concepto que importa.**
 
-Apolo debe permitir que una empresa pueda presentar algo técnicamente complejo de una forma que sea:
+LiveEngines debe permitir que una empresa pueda presentar algo técnicamente complejo de una forma que sea:
 
 - visual;
 - interactiva;
@@ -53,19 +53,19 @@ Estos formatos son útiles, pero tienen una limitación común:
 
 Un proceso industrial puede tener decenas de etapas, variables y relaciones. Una planta puede ser difícil de explicar mediante una fotografía. Una estructura puede requerir comprender fuerzas y cargas. Un producto técnico puede tener múltiples componentes y modos de operación.
 
-Apolo busca añadir una capa interactiva a esa información.
+LiveEngines busca añadir una capa interactiva a esa información.
 
 ---
 
 # 3. Propuesta de valor
 
-Apolo crea una capa visual e interactiva sobre información técnica.
+LiveEngines crea una capa visual e interactiva sobre información técnica.
 
 En lugar de:
 
 > "Aquí tienes una imagen de nuestra planta."
 
-Apolo permite:
+LiveEngines permite:
 
 > "Explora cómo funciona nuestra planta."
 
@@ -73,7 +73,7 @@ En lugar de:
 
 > "Este equipo tiene estos componentes."
 
-Apolo permite:
+LiveEngines permite:
 
 > "Selecciona cada componente y comprende qué hace."
 
@@ -81,7 +81,7 @@ En lugar de:
 
 > "Este proceso tiene ocho etapas."
 
-Apolo permite:
+LiveEngines permite:
 
 > "Recorre las ocho etapas y observa cómo fluye el material."
 
@@ -89,7 +89,7 @@ En lugar de:
 
 > "Esta estructura soporta determinada carga."
 
-Apolo permite:
+LiveEngines permite:
 
 > "Modifica la carga y observa cómo cambia la respuesta visual del sistema."
 
@@ -97,7 +97,7 @@ Apolo permite:
 
 # 4. Qué hacemos
 
-Apolo desarrolla experiencias digitales interactivas para representar:
+LiveEngines desarrolla experiencias digitales interactivas para representar:
 
 1. **Procesos**
 2. **Sistemas**
@@ -132,7 +132,7 @@ Definir claramente los límites es parte fundamental del producto.
 
 ## 5.1 No somos un estudio de modelado 3D hiperrealista
 
-Apolo no tiene como objetivo principal producir modelos cinematográficos o fotorrealistas.
+LiveEngines no tiene como objetivo principal producir modelos cinematográficos o fotorrealistas.
 
 No competimos directamente con:
 
@@ -167,7 +167,7 @@ La interacción existe para **comprender**, no para jugar.
 
 ## 5.3 No desarrollamos simuladores industriales de certificación
 
-Apolo puede realizar simulaciones visuales o educativas.
+LiveEngines puede realizar simulaciones visuales o educativas.
 
 No debe presentarse como sustituto de:
 
@@ -185,7 +185,7 @@ Si una simulación utiliza un modelo simplificado, debe comunicarse como tal.
 
 ## 5.4 No somos un sistema SCADA
 
-Apolo puede visualizar datos operativos, pero no pretende sustituir sistemas industriales de control.
+LiveEngines puede visualizar datos operativos, pero no pretende sustituir sistemas industriales de control.
 
 No controlamos maquinaria real desde la experiencia web salvo que un proyecto específico lo requiera y exista una arquitectura de integración apropiada.
 
@@ -209,7 +209,7 @@ Un gemelo digital completo puede requerir:
 - seguridad;
 - mantenimiento continuo.
 
-Apolo comienza con una capa visual e interactiva mucho más controlada.
+LiveEngines comienza con una capa visual e interactiva mucho más controlada.
 
 ---
 
@@ -244,7 +244,7 @@ Un modelo de baja o media complejidad puede ser suficiente si:
 - comunica las relaciones;
 - permite entender el funcionamiento.
 
-La calidad de Apolo no debe medirse solamente por el número de polígonos.
+La calidad de LiveEngines no debe medirse solamente por el número de polígonos.
 
 ---
 
@@ -373,7 +373,7 @@ El usuario puede seleccionar componentes y visualizar:
 
 # 10. Ingeniería estructural
 
-Apolo puede visualizar conceptos estructurales.
+LiveEngines puede visualizar conceptos estructurales.
 
 ### Ejemplo
 
@@ -406,7 +406,7 @@ No debe presentarse como un análisis estructural certificado cuando no lo sea.
 
 # 11. Visualización de energía y flujos
 
-Apolo puede representar:
+LiveEngines puede representar:
 
 - electricidad;
 - agua;
@@ -429,7 +429,7 @@ El usuario puede seleccionar cada etapa para comprender el flujo.
 
 # 12. Ciencia y simulación
 
-Apolo también puede crear experiencias para explicar conceptos científicos.
+LiveEngines también puede crear experiencias para explicar conceptos científicos.
 
 Ejemplos:
 
@@ -447,7 +447,7 @@ Ejemplos:
 
 Un ejemplo interno de referencia es una visualización interactiva de **Gradient Descent**, donde el usuario puede observar cómo un algoritmo se desplaza sobre una función matemática.
 
-Este tipo de proyecto demuestra que Apolo no depende exclusivamente de modelos industriales.
+Este tipo de proyecto demuestra que LiveEngines no depende exclusivamente de modelos industriales.
 
 ---
 
@@ -474,7 +474,7 @@ El objetivo es convertir documentación pasiva en una experiencia exploratoria.
 
 # 14. Marketing técnico y ventas B2B
 
-Una empresa técnica puede utilizar Apolo para explicar productos complejos a clientes potenciales.
+Una empresa técnica puede utilizar LiveEngines para explicar productos complejos a clientes potenciales.
 
 Especialmente útil cuando el producto:
 
@@ -490,7 +490,7 @@ La experiencia puede incorporarse directamente en una web comercial.
 
 # 15. Industrias objetivo
 
-Apolo no debe limitarse inicialmente a una única industria.
+LiveEngines no debe limitarse inicialmente a una única industria.
 
 ## 15.1 Minería
 
@@ -611,13 +611,13 @@ Casos:
 - interacción con espacios;
 - presentación de proyectos.
 
-Apolo no busca reemplazar el render arquitectónico tradicional.
+LiveEngines no busca reemplazar el render arquitectónico tradicional.
 
 ---
 
 # 16. Servicios
 
-Apolo se estructura inicialmente en cuatro servicios.
+LiveEngines se estructura inicialmente en cuatro servicios.
 
 ---
 
@@ -714,7 +714,7 @@ Empresas que necesitan explicar tecnología, procesos o sistemas.
 
 # 17. Niveles de complejidad
 
-Para evitar vender proyectos excesivamente grandes desde el inicio, Apolo utilizará niveles.
+Para evitar vender proyectos excesivamente grandes desde el inicio, LiveEngines utilizará niveles.
 
 ## Nivel 1 — Interactive Visualization
 
@@ -874,7 +874,7 @@ Pensado para experiencias que necesitan información externa.
 
 # 20. Modelo de negocio
 
-Apolo debe funcionar inicialmente como un **servicio especializado**, no como un SaaS genérico.
+LiveEngines debe funcionar inicialmente como un **servicio especializado**, no como un SaaS genérico.
 
 El flujo comercial es:
 
@@ -962,7 +962,7 @@ No se introduce una librería si la funcionalidad puede resolverse de forma senc
 
 # 23. Arquitectura conceptual
 
-Apolo debe separar cinco capas:
+LiveEngines debe separar cinco capas:
 
 ```text
 ┌─────────────────────────────┐
@@ -1029,7 +1029,7 @@ Los assets pueden proceder de:
 - modelos 3D;
 - documentación.
 
-### Apolo
+### LiveEngines
 
 - modelos simplificados;
 - diagramas;
@@ -1134,7 +1134,7 @@ La regla es:
 
 # 30. Requisitos funcionales generales
 
-Una experiencia Apolo debe poder:
+Una experiencia LiveEngines debe poder:
 
 - cargar correctamente en navegador;
 - funcionar en desktop;
@@ -1186,7 +1186,7 @@ Objetivo inicial:
 
 # 32. Límites de calidad
 
-Apolo no debe prometer:
+LiveEngines no debe prometer:
 
 - precisión física absoluta;
 - representación industrial perfecta;
@@ -1230,7 +1230,7 @@ Las métricas deben medir utilidad, no solamente tecnología.
 
 ---
 
-# 34. MVP de Apolo
+# 34. MVP de LiveEngines
 
 El MVP no será una plataforma.
 
@@ -1291,7 +1291,7 @@ Una experiencia científica.
 
 El Gradient Descent puede funcionar como uno de los primeros ejemplos.
 
-Debe demostrar que Apolo también puede trabajar con:
+Debe demostrar que LiveEngines también puede trabajar con:
 
 - matemáticas;
 - algoritmos;
@@ -1304,7 +1304,7 @@ Debe demostrar que Apolo también puede trabajar con:
 
 No intentar construir una plataforma completa.
 
-El primer objetivo es demostrar que Apolo puede resolver cuatro problemas:
+El primer objetivo es demostrar que LiveEngines puede resolver cuatro problemas:
 
 ### Problema A
 
@@ -1334,7 +1334,7 @@ El primer objetivo es demostrar que Apolo puede resolver cuatro problemas:
 
 # 36. Ventaja competitiva
 
-La ventaja de Apolo no será producir modelos 3D más detallados que un estudio especializado.
+La ventaja de LiveEngines no será producir modelos 3D más detallados que un estudio especializado.
 
 Será combinar:
 
@@ -1358,7 +1358,7 @@ Esto reduce la barrera de acceso frente a soluciones que requieren:
 
 # 37. Posicionamiento
 
-Apolo debe evitar posicionarse como:
+LiveEngines debe evitar posicionarse como:
 
 - agencia 3D;
 - estudio de renders;
@@ -1368,7 +1368,7 @@ Apolo debe evitar posicionarse como:
 
 Posicionamiento recomendado:
 
-> **Apolo crea experiencias técnicas interactivas para explicar sistemas, procesos, productos y fenómenos complejos directamente desde el navegador.**
+> **LiveEngines crea experiencias técnicas interactivas para explicar sistemas, procesos, productos y fenómenos complejos directamente desde el navegador.**
 
 Versión corta:
 
@@ -1488,7 +1488,7 @@ Explorar:
 
 # 40. Criterios para aceptar un proyecto
 
-Un proyecto es adecuado para Apolo cuando:
+Un proyecto es adecuado para LiveEngines cuando:
 
 - existe un problema de comunicación técnica;
 - la interacción aporta valor;
@@ -1510,7 +1510,7 @@ Un proyecto debe reconsiderarse cuando:
 
 # 41. Resultado esperado
 
-Apolo debe convertirse en una capacidad especializada para crear **experiencias técnicas interactivas**, no en una fábrica de modelos 3D.
+LiveEngines debe convertirse en una capacidad especializada para crear **experiencias técnicas interactivas**, no en una fábrica de modelos 3D.
 
 El activo principal del proyecto será un conjunto de:
 
@@ -1528,7 +1528,7 @@ Con el tiempo, cada proyecto debe reducir el costo y tiempo de producción del s
 
 # 42. Definición final
 
-**Apolo es un servicio de visualización técnica interactiva que transforma procesos, sistemas, productos, datos y conceptos complejos en experiencias web explorables.**
+**LiveEngines es un servicio de visualización técnica interactiva que transforma procesos, sistemas, productos, datos y conceptos complejos en experiencias web explorables.**
 
 No busca competir por realismo.
 

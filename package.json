@@ -1,0 +1,11 @@
+{
+  "name": "liveengines-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "LiveEngines marketing site — bilingual static build",
+  "scripts": {
+    "build": "node build.mjs",
+    "check": "node build.mjs --check --verify-en",
+    "extract": "node tools/extract.mjs"
+  }
+}

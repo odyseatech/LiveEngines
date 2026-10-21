@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<!--
+  SOURCE OF TRUTH — LiveEngines privacy policy (bilingual).
+
+  Edit copy in i18n/privacy.es.json and i18n/privacy.en.json, then run
+  `npm run build`. Never edit politica-de-privacidad.html or
+  en/politica-de-privacidad.html by hand: they are generated.
+
+  Same token system as the landing template (see i18n/template.html).
+
+  The page states exactly what the #contacto form collects — no more. If a
+  field is added to the form, it must be added here in the same change, or
+  the consent checkbox is asking for something the policy does not disclose.
+-->
+<html lang="{{lang}}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{{t:privacy.title}}</title>
+<meta name="description" content="{{t:privacy.meta.description}}">
+<link rel="canonical" href="{{canonical}}">
+<meta name="robots" content="index,follow">
+
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="LiveEngines">
+<meta property="og:title" content="{{t:privacy.title}}">
+<meta property="og:description" content="{{t:privacy.meta.description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:locale" content="{{og_locale}}">
+<meta property="og:locale:alternate" content="{{og_locale_alt}}">
+
+<link rel="alternate" hreflang="es" href="{{hreflang_es}}">
+<link rel="alternate" hreflang="en" href="{{hreflang_en}}">
+<link rel="alternate" hreflang="x-default" href="{{hreflang_es}}">
+
+<link rel="icon" href="{{root}}images/le-logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --ink:#111185; --ink-2:#2E32A3; --ink-3:#3E51C9; --ink-4:#6B6ECC;
+  --paper:#FFFFFF; --paper-2:#F2F3FF; --paper-3:#E8EBFF;
+  --accent:#2323FF; --accent-2:#3E51C9; --accent-light:#99A7FF;
+  /* #6B6ECC queda en 4.44:1 sobre blanco: por debajo de AA para texto pequeño,
+     que es justo el tamaño de las etiquetas de esta página (th, dt, .hero__meta).
+     Este tono de la misma familia sube a 5.75:1 sin romper la escala. */
+  --ink-4:#565AC4;
+  --rule:rgba(17,17,133,.10); --rule-strong:rgba(17,17,133,.16);
+  --font-d:'Space Grotesk',system-ui,sans-serif;
+  --font-display:'Helvetica Neue',Helvetica,Arial,sans-serif;
+  --font-m:'Space Mono','Courier New',monospace;
+  --tx-body:1.0625rem; --lead-body:1.7;
+  --ease-out:cubic-bezier(.22,1,.36,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-d);font-size:var(--tx-body);line-height:var(--lead-body);-webkit-font-smoothing:antialiased}
+.wrap{width:100%;max-width:74rem;margin-inline:auto;padding-inline:clamp(1.25rem,4vw,3rem)}
+.narrow{width:100%;max-width:44rem;margin-inline:auto;padding-inline:clamp(1.25rem,4vw,3rem)}
+
+a{color:var(--accent-2);text-decoration:underline;text-underline-offset:.18em;text-decoration-thickness:1px}
+a:hover{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:4px}
+
+.top{position:sticky;top:0;z-index:10;background:rgba(255,255,255,.88);backdrop-filter:blur(12px);border-bottom:1px solid var(--rule)}
+.top__i{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;padding-block:.85rem}
+.top__logo{display:flex;align-items:center;gap:.5rem;font-weight:700;letter-spacing:-.02em;text-decoration:none;color:var(--ink)}
+.top__logo img{height:1.35rem;width:auto;display:block}
+.top__back{font-family:var(--font-m);font-size:.70rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-3);text-decoration:none}
+.top__back:hover{color:var(--accent)}
+
+.hero{padding-block:clamp(3rem,7vw,5.5rem) clamp(2rem,4vw,3rem);background:var(--paper);border-bottom:1px solid var(--rule)}
+.hero__kicker{font-family:var(--font-m);font-size:.70rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent-2);margin:0 0 1rem}
+.hero__h1{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.4rem);font-weight:700;letter-spacing:-.02em;line-height:1.1;margin:0}
+.hero__meta{margin:1.25rem 0 0;font-family:var(--font-m);font-size:.72rem;letter-spacing:.04em;color:var(--ink-4)}
+.hero__meta strong{color:var(--ink-2);font-weight:700}
+
+.doc{padding-block:clamp(2.5rem,6vw,4.5rem) clamp(3.5rem,7vw,5rem)}
+.doc h2{font-family:var(--font-display);font-size:clamp(1.15rem,2.4vw,1.5rem);font-weight:700;letter-spacing:-.01em;margin:3rem 0 .9rem;padding-top:1.5rem;border-top:1px solid var(--rule)}
+.doc h2:first-of-type{margin-top:0;padding-top:0;border-top:none}
+.doc h3{font-size:1rem;font-weight:600;margin:1.75rem 0 .5rem}
+.doc p{margin:0 0 1.1rem;color:var(--ink-2)}
+.doc ul{margin:0 0 1.1rem;padding-left:1.25rem;color:var(--ink-2)}
+.doc li{margin-bottom:.5rem}
+.doc strong{color:var(--ink);font-weight:600}
+.doc dl{margin:0 0 1.1rem}
+.doc dt{font-family:var(--font-m);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);margin-top:1.1rem}
+.doc dd{margin:.2rem 0 0;color:var(--ink-2)}
+
+.callout{background:var(--paper-2);border-left:3px solid var(--accent);border-radius:0 12px 12px 0;padding:1.1rem 1.25rem;margin:0 0 1.5rem}
+.callout p{margin:0;color:var(--ink);font-size:.95rem}
+
+.table-wrap{overflow-x:auto;margin:0 0 1.5rem;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;min-width:34rem;font-size:.94rem}
+th,td{text-align:left;padding:.65rem .8rem;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:var(--font-m);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);font-weight:400;white-space:nowrap}
+td{color:var(--ink-2)}
+td:first-child{color:var(--ink);font-weight:500;white-space:nowrap}
+
+.foot{border-top:1px solid var(--rule);padding-block:2.5rem;background:var(--paper-2)}
+.foot__i{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.foot__copy{font-family:var(--font-m);font-size:.70rem;letter-spacing:.04em;color:var(--ink-4)}
+.foot__links{display:flex;gap:1.5rem;flex-wrap:wrap}
+.foot__links a{font-family:var(--font-m);font-size:.70rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-decoration:none}
+.foot__links a:hover{color:var(--accent)}
+
+@media (max-width:560px){
+  .top__back{font-size:.64rem}
+  td:first-child{white-space:normal}
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap top__i">
+    <a class="top__logo" href="{{url_landing}}"><img src="{{root}}images/le-logo.svg" alt="LiveEngines" width="150" height="48"></a>
+    <a class="top__back" href="{{url_landing}}#contacto">{{t:privacy.back}}</a>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="narrow">
+    <p class="hero__kicker">{{t:privacy.kicker}}</p>
+    <h1 class="hero__h1">{{t:privacy.h1}}</h1>
+    <p class="hero__meta">{{t:privacy.updated}} · <strong>{{today}}</strong></p>
+  </div>
+</section>
+
+<article class="doc">
+  <div class="narrow">
+
+    <div class="callout">
+      <p>{{t:privacy.intro}}</p>
+    </div>
+
+    <h2>{{t:privacy.h.who}}</h2>
+    <p>{{t:privacy.p.who}}</p>
+
+    <h2>{{t:privacy.h.data}}</h2>
+    <p>{{t:privacy.p.data}}</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>{{t:privacy.th.field}}</th>
+            <th>{{t:privacy.th.required}}</th>
+            <th>{{t:privacy.th.why}}</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>{{t:privacy.td.name}}</td><td>{{t:privacy.yes}}</td><td>{{t:privacy.td.why.name}}</td></tr>
+          <tr><td>{{t:privacy.td.email}}</td><td>{{t:privacy.yes}}</td><td>{{t:privacy.td.why.email}}</td></tr>
+          <tr><td>{{t:privacy.td.company}}</td><td>{{t:privacy.yes}}</td><td>{{t:privacy.td.why.company}}</td></tr>
+          <tr><td>{{t:privacy.td.problem}}</td><td>{{t:privacy.yes}}</td><td>{{t:privacy.td.why.problem}}</td></tr>
+          <tr><td>{{t:privacy.td.level}}</td><td>{{t:privacy.no}}</td><td>{{t:privacy.td.why.level}}</td></tr>
+          <tr><td>{{t:privacy.td.budget}}</td><td>{{t:privacy.no}}</td><td>{{t:privacy.td.why.budget}}</td></tr>
+          <tr><td>{{t:privacy.td.timeline}}</td><td>{{t:privacy.no}}</td><td>{{t:privacy.td.why.timeline}}</td></tr>
+          <tr><td>{{t:privacy.td.tools}}</td><td>{{t:privacy.no}}</td><td>{{t:privacy.td.why.tools}}</td></tr>
+          <tr><td>{{t:privacy.td.decision}}</td><td>{{t:privacy.no}}</td><td>{{t:privacy.td.why.decision}}</td></tr>
+          <tr><td>{{t:privacy.td.referral}}</td><td>{{t:privacy.no}}</td><td>{{t:privacy.td.why.referral}}</td></tr>
+          <tr><td>{{t:privacy.td.tech}}</td><td>{{t:privacy.no}}</td><td>{{t:privacy.td.why.tech}}</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>{{t:privacy.h.legal}}</h2>
+    <dl>
+      <dt>{{t:privacy.dt.legal1}}</dt>
+      <dd>{{t:privacy.dd.legal1}}</dd>
+      <dt>{{t:privacy.dt.legal2}}</dt>
+      <dd>{{t:privacy.dd.legal2}}</dd>
+      <dt>{{t:privacy.dt.legal3}}</dt>
+      <dd>{{t:privacy.dd.legal3}}</dd>
+    </dl>
+
+    <h2>{{t:privacy.h.why}}</h2>
+    <p>{{t:privacy.p.why}}</p>
+
+    <h2>{{t:privacy.h.recipients}}</h2>
+    <p>{{t:privacy.p.recipients}}</p>
+    <ul>
+      <li>{{t:privacy.li.recipient1}}</li>
+      <li>{{t:privacy.li.recipient2}}</li>
+      <li>{{t:privacy.li.recipient3}}</li>
+    </ul>
+
+    <h2>{{t:privacy.h.transfer}}</h2>
+    <p>{{t:privacy.p.transfer}}</p>
+
+    <h2>{{t:privacy.h.retention}}</h2>
+    <p>{{t:privacy.p.retention}}</p>
+
+    <h2>{{t:privacy.h.rights}}</h2>
+    <p>{{t:privacy.p.rights}}</p>
+    <p><a href="mailto:{{contact_email}}">{{contact_email}}</a></p>
+
+    <h2>{{t:privacy.h.security}}</h2>
+    <p>{{t:privacy.p.security}}</p>
+
+    <h2>{{t:privacy.h.children}}</h2>
+    <p>{{t:privacy.p.children}}</p>
+
+    <h2>{{t:privacy.h.changes}}</h2>
+    <p>{{t:privacy.p.changes}}</p>
+
+    <h2>{{t:privacy.h.cookies}}</h2>
+    <p>{{t:privacy.p.cookies}}</p>
+
+  </div>
+</article>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot__i">
+    <span class="foot__copy">© {{year}} LiveEngines</span>
+    <nav class="foot__links">
+      <a href="{{url_landing}}">{{t:privacy.nav.site}}</a>
+      <a href="{{url_library}}">{{t:privacy.nav.library}}</a>
+      <a href="mailto:{{contact_email}}">{{contact_email}}</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>

@@ -1,0 +1,1676 @@
+<!DOCTYPE html>
+<!--
+  SOURCE OF TRUTH — LiveEngines bilingual landing page.
+
+  Edit copy in i18n/es.json and i18n/en.json, then run `npm run build`.
+  Never edit liveengines.html or en/index.html by hand: they are generated.
+
+  Tokens:
+    {{ t:key }}                 text node, inserted unescaped (may contain inline markup)
+    {{ attr:name|key }}         attribute value, HTML-escaped on insert
+    {{ #flag }}…{{ /flag }}     conditional block (is_es / is_en)
+    {{ root }}                  relative prefix for local assets — "./" at the root, "../" under /en/
+
+  (spaces inside the braces are deliberate: they keep this comment inert)
+
+  Adding a language: add a target in build.mjs, a i18n/<lang>.json, and a
+  nav entry below. Nothing else changes.
+-->
+<html lang="{{lang}}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{t:title}}</title>
+<meta name="description" content="{{t:meta.description}}">
+<link rel="canonical" href="{{canonical}}">
+<link rel="alternate" hreflang="es" href="/">
+<link rel="alternate" hreflang="en" href="/en/">
+<link rel="alternate" hreflang="x-default" href="/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LiveEngines">
+<meta property="og:title" content="{{t:title}}">
+<meta property="og:description" content="{{t:meta.description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:locale" content="{{og_locale}}">
+<meta property="og:locale:alternate" content="{{og_locale_alt}}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+<style>
+/*
+  Hallmark · macrostructure: Immersive Statement + PRD Restructure
+  theme: Custom — LiveEngines Technical v3 · palette #2323FF #99A7FF #3E51C9 #111185
+  accent: #2323FF · mid #3E51C9 · light #99A7FF · deep #111185
+  type: Space Grotesk (display) + Space Mono (mono)
+  IA: Hero → Problema → Transformación → Qué hacemos/NO → Servicios(dark) → Pricing(pale) → Proceso(vivid) → Demos → Industrias(pale) → Principios(dark) → CTA(vivid)
+  Pre-emit critique: P5 H5 E5 S5 R5 V5
+*/
+:root {
+  --ink:#111185; --ink-2:#2E32A3; --ink-3:#3E51C9; --ink-4:#6B6ECC;
+  --paper:#FFFFFF; --paper-2:#F2F3FF; --paper-3:#E8EBFF;
+  --accent:#2323FF; --accent-2:#3E51C9; --accent-light:#99A7FF;
+  --accent-dim:rgba(35,35,255,.10); --accent-line:rgba(35,35,255,.22);
+  --accent-dim-strong:rgba(35,35,255,.14);
+  --rule:rgba(17,17,133,.10); --rule-strong:rgba(17,17,133,.16);
+  --font-d:'Space Grotesk',system-ui,sans-serif; --font-display:'Helvetica Neue', Helvetica, Arial, sans-serif; --font-m:'Space Mono','Courier New',monospace;
+  --tx-hero:clamp(2.4rem,5.5vw,4.2rem); --tx-d1:clamp(2.2rem,4.8vw,4.4rem); --tx-d2:clamp(1.55rem,3vw,2.55rem);
+  --tx-h3:clamp(1.12rem,1.7vw,1.35rem); --tx-body:1.15rem; --tx-sm:1.05rem; --tx-xs:.92rem; --tx-xxs:.80rem;
+  --lead-hero:.92; --lead-h:1.1; --lead-body:1.7;
+  --tk-hero:-.04em; --tk-h:-.025em; --tk-label:.08em;
+  --ease-out:cubic-bezier(0,0,.2,1); --ease-snap:cubic-bezier(.16,1,.3,1);
+  /* Semantic aliases.
+     var() inside a custom property resolves at the element that USES it, not where it is
+     declared — so these aliases pick up the per-section re-theming in .hero,
+     .section--dark, .section--vivid, .price--feat, .pipeline .step, etc. automatically,
+     without restating them in every scope. */
+  --color-text:var(--ink); --color-text-secondary:var(--ink-2); --color-text-muted:var(--ink-3); --color-text-faint:var(--ink-4);
+  --color-accent:var(--accent); --color-border:var(--rule); --color-border-strong:var(--rule-strong);
+  --color-surface:var(--paper-2); --color-surface-secondary:var(--paper-3);
+  --font-body:var(--font-d); --font-mono:var(--font-m);
+  --ease-arch:cubic-bezier(.16,1,.3,1); --text-sm:1.05rem;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{overflow-x:clip}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-d);font-size:var(--tx-body);line-height:var(--lead-body);-webkit-font-smoothing:antialiased}
+h1,h2,h3,.hero__headline,.display-xl,.display-md,.svc__title,.usecase-title,.t-quote--after{font-family:var(--font-display);letter-spacing:-.02em}
+/* premium chrome */
+.progress{position:fixed;top:0;left:0;height:2px;width:100%;background:var(--accent);transform-origin:left;transform:scaleX(0);z-index:300;transition:transform .08s linear}
+
+img{display:block;max-width:100%} a{color:inherit;text-decoration:none}
+.wrap{width:90vw;max-width:90vw;margin-inline:auto;padding-inline:0}
+.thumb{position:relative;overflow:hidden;background:var(--color-surface);border:1px solid var(--color-border-strong);border-radius:12px;aspect-ratio:16/9;display:grid;place-items:center}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.thumb--4-3{aspect-ratio:4/3} .thumb--1-1{aspect-ratio:1/1}
+.thumb__label{position:absolute;bottom:.6rem;left:.6rem;background:rgba(255,255,255,.92);padding:.25rem .5rem;border:1px solid var(--color-border);font-family:var(--font-mono);font-size:.70rem;letter-spacing:.06em;text-transform:uppercase;color:var(--color-text)}
+.thumb--placeholder{background:linear-gradient(135deg, var(--color-surface) 0%, var(--color-surface-secondary) 100%);color:var(--color-text-faint);font-family:var(--font-mono);font-size:.76rem;letter-spacing:.06em;text-transform:uppercase}
+
+/* NAV — logo izquierda / pill centro / CTA derecha */
+.nav{position:fixed;top:15px;left:50%;transform:translateX(-50%);width:90vw;max-width:90vw;z-index:200;display:flex;align-items:center;justify-content:space-between;gap:1.2rem;background:transparent;border:none;box-shadow:none;padding:0}
+.nav__center{flex:1;display:flex;justify-content:center}
+.nav__pill{display:flex;align-items:center;gap:1.25rem;background:#FFFFFF;border:1px solid rgba(17,17,133,.08);border-radius:8px;box-shadow:0 4px 20px rgba(17,17,133,.08);padding:.62rem 1.1rem;transition:background .3s var(--ease-out), backdrop-filter .3s var(--ease-out), border-color .3s var(--ease-out), box-shadow .3s var(--ease-out)}
+.nav.is-scrolled .nav__pill{background:rgba(255,255,255,.58);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-color:rgba(255,255,255,.55);box-shadow:0 8px 32px rgba(17,17,133,.12), 0 1px 0 rgba(255,255,255,.6) inset}
+.nav__i{display:contents}
+.nav__logo{display:flex;align-items:center;gap:.5rem;font-family:var(--font-d);font-size:.95rem;font-weight:700;letter-spacing:-.02em;background:transparent;border-radius:8px;padding:.35rem .45rem;transition:background .3s var(--ease-out), box-shadow .3s}
+.nav.is-scrolled .nav__logo{background:var(--ink);box-shadow:0 4px 16px rgba(17,17,133,.22)}
+.logo-mark{width:22px;height:22px;flex-shrink:0}
+.logo-mark svg{width:100%;height:100%}
+.nav__links{display:flex;align-items:center;gap:1.25rem}
+.nav__links a{font-family:var(--font-display);font-size:.82rem;font-weight:500;letter-spacing:.02em;text-transform:none;color:var(--ink-3);transition:color .2s;position:relative;padding-bottom:2px}
+.nav__links a::after{content:"";position:absolute;left:0;bottom:0;height:1px;width:0;background:var(--accent);transition:width .22s var(--ease-out)}
+.nav__links a:hover::after{width:100%}
+.nav__links a:hover{color:var(--ink)}
+.nav__cta{font-family:var(--font-d);font-size:var(--tx-xxs);font-weight:600;letter-spacing:var(--tk-label);text-transform:uppercase;color:var(--paper);background:var(--ink);border:1px solid var(--ink);padding:.48rem 1.05rem;border-radius:8px;transition:background .2s,border-color .2s}
+.nav__cta:hover{background:var(--accent);border-color:var(--accent)}
+/* LANGUAGE SWITCH — segmented control, ES | EN */
+.langsw{display:inline-flex;align-items:center;border:1px solid rgba(255,255,255,.22);border-radius:8px;overflow:hidden;background:transparent;flex-shrink:0;transition:background .3s var(--ease-out), border-color .3s var(--ease-out), box-shadow .3s var(--ease-out)}
+.langsw__opt{font-family:var(--font-m);font-size:.70rem;font-weight:600;letter-spacing:var(--tk-label);text-transform:uppercase;color:#FFFFFF;padding:.48rem .62rem;line-height:1;display:inline-flex;align-items:center;transition:background .2s, color .2s;position:relative}
+.langsw__opt+.langsw__opt{border-left:1px solid rgba(255,255,255,.22)}
+.langsw__opt:hover{background:rgba(255,255,255,.14)}
+.langsw__opt.is-active{background:var(--ink);color:#FFFFFF}
+.langsw__opt:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+/* scrolled state — matches the glass treatment of the nav pill */
+.nav.is-scrolled .langsw{background:rgba(255,255,255,.58);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border-color:rgba(17,17,133,.10);box-shadow:0 4px 20px rgba(17,17,133,.08)}
+.nav.is-scrolled .langsw__opt{color:var(--ink-3)}
+.nav.is-scrolled .langsw__opt+.langsw__opt{border-left-color:rgba(17,17,133,.10)}
+.nav.is-scrolled .langsw__opt:hover{background:rgba(35,35,255,.08);color:var(--ink)}
+.nav.is-scrolled .langsw__opt.is-active{background:var(--ink);color:#FFFFFF}
+@media(max-width:900px){ .nav__lang{display:none} }
+.nav__toggle{display:none;background:transparent;border:1px solid var(--rule-strong);border-radius:4px;padding:.45rem .6rem;cursor:pointer}
+.nav__toggle span{display:block;width:16px;height:1.5px;background:var(--ink);margin:3px 0}
+@media(max-width:900px){ .nav{width:92vw;max-width:none} .mobile{width:92vw;max-width:none} .nav__pill{display:none} .nav__toggle{display:block} }
+.mobile{position:fixed;top:64px;left:50%;transform:translateX(-50%);width:65vw;max-width:860px;background:rgba(255,255,255,.9);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(255,255,255,.6);border-radius:20px;padding:1rem 1.25rem 1.2rem;display:flex;flex-direction:column;gap:.6rem;z-index:199;box-shadow:0 16px 40px rgba(17,17,133,.16)}
+.mobile a{font-family:var(--font-m);font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2);padding:.45rem 0;border-bottom:1px solid var(--rule)}
+.mobile[hidden]{display:none}
+/* language switch inside the mobile drawer */
+.langsw--mobile{width:100%;justify-content:flex-start;margin-bottom:.35rem;border-color:var(--rule-strong)}
+.langsw--mobile .langsw__opt{flex:1;justify-content:center;padding:.7rem .62rem;color:var(--ink-3);font-size:.78rem}
+.langsw--mobile .langsw__opt+.langsw__opt{border-left-color:var(--rule-strong)}
+.langsw--mobile .langsw__opt:hover{background:var(--accent-dim);color:var(--ink)}
+.langsw--mobile .langsw__opt.is-active{background:var(--ink);color:#FFFFFF}
+.langsw--mobile .langsw__opt.is-active:hover{background:var(--ink);color:#FFFFFF}
+@media(min-width:901px){ .langsw--mobile{display:none} }
+
+/* HERO — VIDEO es el fondo de la sección (sin rastro negro) — CNC inferior pronunciado */
+.hero{min-height:90vh;display:grid;justify-items:center;align-items:end;padding-top:7rem;padding-bottom:3.5rem;position:relative;overflow:hidden;background:transparent;color:#FFFFFF;--ink:#FFFFFF;--ink-2:#C4C7FF;--ink-3:#99A7FF;--ink-4:#7A7DCC;--rule:rgba(255,255,255,.12);--rule-strong:rgba(255,255,255,.18);clip-path:url(#hero-cnc-bottom);border:none;outline:none;box-shadow:none;margin-bottom:-1px}
+.hero__headline{opacity:1;transform:none}
+.hero__marquee{overflow:hidden;white-space:nowrap;border-top:none;padding-block:.7rem}
+.hero__marquee-track{display:inline-flex;gap:2.2rem;animation:marquee 22s linear infinite;will-change:transform}
+.hero__marquee-track span{font-family:var(--font-m);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.7)}
+@keyframes marquee{from{transform:translateX(0)} to{transform:translateX(-50%)}}
+.hero__sub-row .magnet{transition:transform .18s var(--ease-out);will-change:transform}
+.hero__background-video,.hero-video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0;pointer-events:none;clip-path:url(#hero-cnc-bottom)}
+.hero__video-overlay,.hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg, rgba(0,0,0,.35) 0%, rgba(0,0,0,.45) 55%, rgba(0,0,0,.55) 100%);pointer-events:none}
+.hero__canvas-wrap{position:absolute;inset:0;z-index:0;pointer-events:none}
+#hero-canvas{width:100%;height:100%;display:block}
+.hero__content,.hero-content{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:flex-end;padding-bottom:2.6rem;padding-top:2rem;width:100%}
+.hero__kicker{font-family:var(--font-m);font-size:var(--tx-xxs);letter-spacing:.12em;text-transform:uppercase;color:var(--accent-light);margin-bottom:1rem;display:flex;gap:.6rem;align-items:center}
+.hero__kicker::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--accent-light);display:inline-block}
+.hero__headline{font-family:var(--font-display);font-size:var(--tx-hero);font-weight:700;line-height:var(--lead-hero);letter-spacing:var(--tk-hero);max-width:900px;color:#FFFFFF;text-align:center;margin-inline:auto}
+.hero__headline em{font-style:normal;color:var(--accent-light)}
+.hero__sub-row{display:flex;flex-direction:column;align-items:center;gap:1.2rem;margin-top:1.6rem;text-align:center}
+.hero__sub{font-size:var(--tx-body);color:#C4C7FF;max-width:620px;text-align:center;margin-inline:auto}
+.hero__sub strong{color:#FFFFFF;font-weight:600}
+.hero__actions{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;justify-content:center;margin-top:.6rem}
+.btn-primary{font-family:var(--font-d);font-size:var(--tx-xs);font-weight:600;letter-spacing:var(--tk-label);text-transform:uppercase;color:#111185;background:#FFFFFF;border:1px solid #FFFFFF;padding:.75rem 1.4rem;border-radius:8px;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;transition:background .2s,border-color .2s,color .2s;position:relative;overflow:hidden;isolation:isolate;white-space:nowrap}
+.btn-primary::before{content:"";position:absolute;left:0;right:0;bottom:0;height:0;background:var(--accent);transition:height .45s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none}
+.btn-primary span{position:relative;z-index:1;transition:color .35s ease}
+.btn-primary:hover{color:#FFFFFF;border-color:var(--accent);background:#FFFFFF}
+.btn-primary:hover::before{height:100%}
+.btn-primary:hover span{color:#FFFFFF}
+.btn-ghost{font-family:var(--font-d);font-size:var(--tx-xs);font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ink-2);padding:.6rem .2rem}
+.btn-ghost:hover{color:var(--ink)}
+.hero .btn-primary{background:#FFFFFF;color:#111185;border-color:#FFFFFF}
+.hero .btn-ghost{color:#FFFFFF;border:1px solid rgba(255,255,255,.22);padding:.65rem 1rem;border-radius:8px}
+/* Hero CTA — liquid fill de abajo hacia arriba (sin magnet) */
+.hero .btn-primary.hero-cta{background:#FFFFFF;color:#111185;border-color:#FFFFFF;position:relative;overflow:hidden;isolation:isolate;border-radius:8px;transition:background .2s,border-color .2s,color .2s}
+.hero .btn-primary.hero-cta::before{content:"";position:absolute;left:0;right:0;bottom:0;height:0;background:var(--accent);transition:height .45s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none}
+.hero .btn-primary.hero-cta span{position:relative;z-index:1;transition:color .35s ease}
+.hero .btn-primary.hero-cta:hover{color:#FFFFFF;border-color:var(--accent);background:#FFFFFF}
+.hero .btn-primary.hero-cta:hover::before{height:100%}
+.hero .btn-primary.hero-cta:hover span{color:#FFFFFF}
+.hero .btn-ghost.hero-cta{color:#FFFFFF;border:1px solid rgba(255,255,255,.22);padding:.65rem 1rem;border-radius:8px;position:relative;overflow:hidden;isolation:isolate;border-radius:8px;transition:background .2s,border-color .2s,color .2s}
+.hero .btn-ghost.hero-cta::before{content:"";position:absolute;left:0;right:0;bottom:0;height:0;background:var(--accent);transition:height .45s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none}
+.hero .btn-ghost.hero-cta span{position:relative;z-index:1;transition:color .35s ease}
+.hero .btn-ghost.hero-cta:hover{color:#111185;border-color:#FFFFFF;background:#FFFFFF}
+.hero .btn-ghost.hero-cta:hover::before{height:100%}
+.hero .btn-ghost.hero-cta:hover span{color:#111185}
+@media(prefers-reduced-motion:reduce){
+  .hero .btn-primary.hero-cta::before, .hero .btn-ghost.hero-cta::before{transition:none}
+}
+.hero__bottom-bar{position:relative;z-index:10;border-top:none;padding-block:.9rem}
+.hero__bottom-i{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.hero__tag{font-family:var(--font-m);font-size:var(--tx-xxs);color:var(--ink-3);letter-spacing:var(--tk-label);text-transform:uppercase}
+.hero__tag-row{display:flex;gap:1.6rem;flex-wrap:wrap}
+
+/* SECTIONS */
+.section{padding-block:clamp(4.5rem,9vw,8.5rem)}
+.section--ruled{border-top:none}
+.section--dark{background:var(--ink);color:var(--paper);--rule:rgba(255,255,255,.12);--rule-strong:rgba(255,255,255,.18);--ink-2:#C4C7FF;--ink-3:#99A7FF;--ink-4:#7A7DCC}
+.section--vivid{background:var(--accent);color:#FFFFFF;--rule:rgba(255,255,255,.18);--rule-strong:rgba(255,255,255,.28);--ink: #FFFFFF; --ink-2:#E8EBFF;--ink-3:#C4C7FF;--ink-4:#99A7FF}
+.section--pale{background:var(--paper-2);border-top:none;border-bottom:none}
+.section--mid{background:var(--accent-2);color:#FFFFFF;--rule:rgba(255,255,255,.15);--rule-strong:rgba(255,255,255,.22);--ink:#FFFFFF;--ink-2:#E8EBFF;--ink-3:#C4C7FF;--ink-4:#99A7FF}
+.eyebrow{font-family:var(--font-display);font-size:var(--text-sm);letter-spacing:-.01em;text-transform:none;font-weight:400;color:#9AA0B8;display:block;margin-bottom:1rem}
+.eyebrow--accent{color:var(--accent)}
+
+/* STATEMENT + PROBLEM PILLS — sin borde superior para no marcar línea en el corte CNC del hero */
+.statement{padding-block:clamp(5rem,10vw,9rem);border-top:none;background:var(--paper)}
+.statement__grid{position:relative}
+.statement__grid{display:grid;grid-template-columns:1fr;gap:2rem;align-items:center;justify-items:center;text-align:center;max-width:800px;margin-inline:auto}
+.statement__grid > div{text-align:center}
+.statement .wrap{text-align:center}
+.statement__text{text-align:center;margin-inline:auto}
+.statement__side{text-align:center}
+.problem-callout{margin-inline:auto;text-align:center;border:none;padding-left:0;padding-top:.8rem;max-width:55ch}
+.statement__embed{width:90vw;min-height:80vh;border:1px solid var(--rule-strong);border-radius:12px;display:block;margin:75px auto 0;background:var(--paper)}
+.statement__text{font-family:var(--font-display);font-size:clamp(2.91rem,5.7vw,4.79rem);font-weight:700;line-height:1.05;letter-spacing:-.02em;max-width:62ch}
+.statement__text em{font-style:normal;color:var(--ink-3)}
+.statement__side{padding-top:.6rem}
+.statement__side p{font-size:var(--tx-sm);color:var(--ink-2);margin-bottom:1rem}
+.pill-row{display:flex;flex-wrap:wrap;gap:.4rem}
+.pill{font-family:var(--font-m);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--rule-strong);padding:.32rem .55rem;border-radius:999px;background:var(--paper-2)}
+.pill--accent{color:var(--accent);border-color:var(--accent-line);background:var(--accent-dim)}
+.problem-callout{margin-top:1.2rem;border:none;padding-left:0;max-width:55ch}
+.problem-callout strong{font-size:var(--tx-sm);display:block}
+.problem-callout span{font-size:var(--tx-sm);color:var(--ink-2)}
+@media(max-width:850px){ .statement__grid{grid-template-columns:1fr} }
+
+/* TRANSFORMATION — pale periwinkle to break white + zigzag */
+.transform-section{border-top:none;padding-block:clamp(4.5rem,8vw,7.5rem);background:var(--paper-2)}
+.transform-row{transition:transform .4s var(--ease-out), box-shadow .3s}
+.transform-row:nth-child(odd){transform:translateX(-10px)}
+.transform-row:nth-child(even){transform:translateX(10px)}
+.transform-row:hover{transform:translateX(0);box-shadow:0 10px 28px rgba(17,17,133,.08)}
+@media(max-width:700px){ .transform-row:nth-child(odd), .transform-row:nth-child(even){transform:none} }
+.transform-header{margin-bottom:clamp(2.5rem,5vw,4rem)}
+.transform-header h2{font-size:var(--tx-d2);font-weight:700;letter-spacing:var(--tk-h);line-height:var(--lead-h);max-width:600px}
+.transform-grid{display:grid;gap:1px;background:var(--rule-strong);padding:1px;border:1px solid var(--rule-strong);border-radius:14px;overflow:hidden}
+.transform-row{display:grid;grid-template-columns:1fr 60px 1fr;background:var(--paper);min-height:118px}
+.transform-col{padding:1.6rem 1.5rem;display:flex;flex-direction:column;justify-content:center;gap:.45rem}
+.transform-col--before{background:var(--paper-3)}
+/* animación Antes → Con LiveEngines — sutil slide + color */
+.transform-col .transform-quote{transition:opacity .55s var(--ease-out), transform .55s var(--ease-arch), color .35s var(--ease-out);will-change:transform, opacity}
+.transform-row .transform-col--before .transform-quote{opacity:1;transform:none;color:var(--color-text-faint)}
+.transform-row .transform-col--after .transform-quote{opacity:.42;transform:translateY(10px);color:var(--color-text-muted)}
+.transform-row.is-swapped .transform-col--before .transform-quote{opacity:.28;transform:translateY(-10px)}
+.transform-row.is-swapped .transform-col--after .transform-quote{opacity:1;transform:none;color:var(--color-text);font-weight:500}
+.transform-row .transform-col--after{transition:background .35s}
+.transform-row.is-swapped .transform-col--after{background:#FFFFFF}
+@media(prefers-reduced-motion:reduce){
+  .transform-col .transform-quote{transition:none}
+  .transform-row .transform-col--after .transform-quote{opacity:1;transform:none}
+  .transform-row.is-swapped .transform-col--before .transform-quote{opacity:.45;transform:none}
+}
+.transform-divider{display:flex;align-items:center;justify-content:center;background:var(--paper);border-inline:1px solid var(--rule-strong)}
+.transform-divider svg{width:16px;height:16px;stroke:var(--accent);stroke-width:2;fill:none}
+.transform-label{font-family:var(--font-m);font-size:var(--tx-xxs);letter-spacing:var(--tk-label);text-transform:uppercase;color:var(--ink-4)}
+.transform-quote{font-family:var(--font-d);font-size:var(--tx-sm);color:var(--ink-3);line-height:1.5}
+.transform-quote--after{color:var(--ink);font-weight:500}
+@media(max-width:600px){ .transform-row{grid-template-columns:1fr;min-height:auto} .transform-divider{min-height:38px;border-inline:none;border-block:1px solid var(--rule-strong)} }
+
+/* TRANSFORM — comparativa ventajas, sin slider — 4 cards separadas, editorial */
+.t-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;margin-top:2rem}
+.t-card{display:grid;grid-template-columns:1fr 40px 1fr;background:var(--paper);border:1px solid var(--rule-strong);border-radius:14px;overflow:hidden;transition:transform .22s var(--ease-out), box-shadow .22s, border-color .22s}
+.t-card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(17,17,133,.08);border-color:var(--accent-line)}
+.t-card__before{padding:1.4rem;background:var(--paper-2);display:flex;flex-direction:column;gap:.5rem}
+.t-card__after{padding:1.4rem;background:var(--paper);display:flex;flex-direction:column;gap:.5rem;border-left:1px solid var(--rule-strong)}
+.t-card__arrow{display:grid;place-items:center;background:var(--paper);color:var(--color-accent);font-size:1rem;border-left:1px solid var(--rule-strong);border-right:1px solid var(--rule-strong)}
+.t-quote{font-family:var(--font-body);font-size:1.02rem;line-height:1.5;max-width:28ch}
+.t-quote--before{color:var(--color-text-muted);font-weight:400}
+.t-quote--after{color:var(--color-text);font-weight:600}
+.t-limit{font-family:var(--font-mono);font-size:.70rem;letter-spacing:.04em;color:var(--color-text-faint);margin-top:.2rem}
+.t-adv{font-family:var(--font-mono);font-size:.70rem;letter-spacing:.04em;color:var(--color-accent);background:var(--accent-dim);border:1px solid var(--accent-line);padding:.28rem .5rem;border-radius:999px;align-self:flex-start;margin-top:.4rem}
+.t-card:nth-child(2){transform:translateY(10px)}
+.t-card:nth-child(4){transform:translateY(10px)}
+.t-card:nth-child(2):hover,.t-card:nth-child(4):hover{transform:translateY(7px)}
+@media(max-width:900px){ .t-grid{grid-template-columns:1fr} .t-card:nth-child(n){transform:none} .t-card:nth-child(n):hover{transform:translateY(-2px)} }
+@media(max-width:600px){ .t-card{grid-template-columns:1fr; } .t-card__arrow{height:36px;border-left:none;border-right:none;border-top:1px solid var(--rule-strong);border-bottom:1px solid var(--rule-strong);transform:rotate(90deg)} }
+
+/* BOUNDARIES — white to reset */
+.boundaries{border-top:none;padding-block:clamp(4.5rem,8vw,7.5rem);background:var(--paper)}
+.bound-header{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-bottom:2.5rem;align-items:end}
+.bound-header h2{font-size:var(--tx-d2);font-weight:700;letter-spacing:var(--tk-h)}
+.bound-header p{color:var(--ink-2);font-size:var(--tx-sm)}
+.bound-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.bound-card{border:1px solid var(--rule-strong);border-radius:2px;padding:1.5rem;background:var(--paper)}
+.bound-card--no{background:var(--paper-2)}
+.bound-card h3{font-family:var(--font-display);font-size:var(--tx-d2);font-weight:700;letter-spacing:var(--tk-h);line-height:1.05;margin-bottom:45px}
+.bound-list{list-style:none;display:flex;flex-direction:column;gap:.7rem}
+.bound-list li{font-size:var(--tx-sm);line-height:1.5;display:flex;gap:.6rem}
+.bound-list li span{flex:0 0 14px;margin-top:2px}
+.bound-card--yes li span{color:var(--accent)}
+.bound-card--no li span{color:var(--ink-4)}
+.bound-note{margin-top:1rem;font-family:var(--font-m);font-size:.7rem;color:var(--ink-3);letter-spacing:.04em;line-height:1.6;border-top:1px solid var(--rule);padding-top:.8rem}
+@media(max-width:800px){ .bound-header{grid-template-columns:1fr;gap:1rem} .bound-grid{grid-template-columns:1fr} }
+
+/* SERVICES — deep navy to anchor */
+.services-shell{background:var(--paper)}
+.services{border:none;outline:none;box-shadow:none;padding-block:clamp(5rem,9vw,8rem);background:var(--ink);color:var(--paper);--rule:rgba(255,255,255,.1);--rule-strong:rgba(255,255,255,.16);--ink-2:#C4C7FF;--ink-3:#99A7FF;--ink-4:#7A7DCC;--color-accent:var(--accent-light);margin-bottom:-1px;clip-path:url(#svc-both);position:relative}
+.services .eyebrow{color:#C4C8D8}
+.services .services-header p{color:#C4C7FF}
+.services .svc__num{color:var(--accent-light)}
+.services-header{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-bottom:2.5rem;align-items:end}
+.services-header h2{font-size:var(--tx-d2);font-weight:700;letter-spacing:var(--tk-h)}
+.services-header p{color:var(--ink-2);font-size:var(--tx-body)}
+.svc-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+@media(max-width:1100px){ .svc-grid{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:600px){ .svc-grid{grid-template-columns:1fr} }
+.svc{ background:#FFFFFF;padding:1.7rem;display:flex;flex-direction:column;gap:.9rem;position:relative;border-radius:14px;border:1px solid var(--color-border-strong);overflow:hidden;transition:transform .22s var(--ease-out), box-shadow .22s, border-color .22s;min-height:480px;color:var(--color-text)}
+/* la banda usa el ratio del espacio de diseño (400x160) para que el dibujo entre
+   escalado en uniformemente: con height fija el canvas se deformaba en horizontal/vertical */
+.svc-visual{aspect-ratio:400/160;background:var(--color-surface);overflow:hidden;border-bottom:1px solid var(--color-border-strong);margin:-1.7rem -1.7rem 1rem;border-radius:14px 14px 0 0;flex:0 0 auto}
+.svc-visual canvas{width:100%;height:100%;display:block}
+.svc:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(17,17,133,.12);border-color:var(--accent-line)}
+.svc:nth-child(1){border-top:3px solid var(--accent-light)}
+.svc:nth-child(4){background:linear-gradient(135deg, rgba(255,255,255,.08), rgba(153,167,255,.08))}
+
+.svc__head{display:flex;justify-content:space-between;gap:1rem;align-items:start}
+.svc__num{font-family:var(--font-m);font-size:var(--tx-xxs);letter-spacing:.1em;color:var(--ink-4)}
+.svc__price{font-family:var(--font-m);font-size:.7rem;color:var(--accent);border:1px solid var(--accent-line);background:var(--accent-dim);padding:.22rem .5rem;border-radius:999px;white-space:nowrap}
+.svc__title{font-size:var(--tx-h3);font-weight:600;letter-spacing:-.01em;line-height:1.15}
+.svc__desc{font-size:var(--tx-sm);color:var(--ink-2);line-height:1.35}
+.svc__list{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-top:.2rem}
+.svc__list li{font-size:1rem;color:var(--ink-2);display:flex;gap:.5rem;line-height:1.5}
+.svc__ideal{margin-top:auto;font-family:var(--font-m);font-size:.7rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);border-top:1px solid var(--rule);padding-top:.7rem}
+.svc__ideal strong{color:var(--ink)}
+/* la sección de servicios es fondo oscuro: la card necesita su propia superficie y
+   textos claros, y estas reglas van DESPUÉS de las base para ganarle a .svc:nth-child(4) */
+.services .svc{background:rgba(255,255,255,.055);border:1px solid rgba(255,255,255,.14);color:#FFFFFF;box-shadow:none}
+.services .svc:nth-child(4){background-color:rgba(255,255,255,.085);background-image:linear-gradient(160deg, rgba(255,255,255,.10), rgba(153,167,255,.09))}
+.services .svc:hover{border-color:rgba(153,167,255,.55);box-shadow:0 12px 28px rgba(4,4,60,.45)}
+.services .svc__title{color:#FFFFFF}
+.services .svc__desc, .services .svc__list li{color:#C4C7FF}
+.services .svc__ideal{color:#99A7FF;border-top-color:rgba(255,255,255,.12)}
+.services .svc__ideal strong{color:#FFFFFF}
+.services .svc-visual{background:var(--paper-2);border-bottom-color:rgba(255,255,255,.14)}
+.services .svc .mono{color:#99A7FF !important}
+@media(max-width:800px){ .services-header{grid-template-columns:1fr;gap:1rem} }
+
+/* PRICING — pale periwinkle */
+.pricing{border-top:none;padding-block:clamp(4.5rem,8vw,7.5rem);background:var(--paper-3)}
+.pricing-header{max-width:720px;margin:0 auto 2.5rem;text-align:center}
+.pricing-header h2{font-size:var(--tx-d2);font-weight:700;letter-spacing:var(--tk-h);margin-bottom:.6rem;line-height:1.05;text-align:center}
+.pricing-header p{color:var(--ink-2)}
+.pricing-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.25rem;background:transparent;border:none;padding:0}
+.price{ background:var(--paper);padding:1.5rem;display:flex;flex-direction:column;gap:.7rem;position:relative;border-radius:14px;border:1px solid var(--rule-strong);transition:transform .28s var(--ease-out), box-shadow .28s, border-color .28s}
+.price:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(17,17,133,.12);border-color:var(--accent-line)}
+.price--feat{background:var(--ink);color:var(--paper);--ink-2:#C4C7FF;--ink-3:#99A7FF;--rule:rgba(255,255,255,.14);transform:translateY(-6px);box-shadow:0 18px 40px rgba(17,17,133,.18);border:1.5px solid var(--accent-light);overflow:hidden}
+.price--feat::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent-light)}
+.price--feat:hover{transform:translateY(-18px) scale(1.02)}
+.price__badge{font-family:var(--font-m);font-size:.70rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent-line);padding:.24rem .55rem;border-radius:999px;align-self:flex-start}
+.price--feat .price__badge{color:var(--paper);border-color:rgba(245,242,238,.2);background:rgba(245,242,238,.08)}
+.price__name{font-weight:700;letter-spacing:-.01em}
+.price__cost{font-family:var(--font-m);font-size:.95rem;color:var(--accent)}
+.price--feat .price__cost{color:var(--accent)}
+.price__desc{font-size:1.05rem;color:var(--ink-2);line-height:1.6;min-height:38px}
+.price__list{list-style:none;display:flex;flex-direction:column;gap:.4rem;margin-top:.4rem}
+.price__list li{font-size:.95rem;display:flex;gap:.45rem;color:var(--ink-2)}
+.price__list li::before{content:"✓";color:var(--accent);font-size:.75rem;margin-top:1px}
+.price--feat .price__list li{color:#BBBBBB}
+.price__cta{margin-top:auto;padding-top:.9rem}
+.price__cta a{font-family:var(--font-m);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;border:1px solid var(--rule-strong);padding:.5rem .75rem;border-radius:8px;display:inline-block}
+.price--feat .price__cta a{border-color:rgba(245,242,238,.2);color:var(--paper)}
+@media(max-width:1050px){ .pricing-grid{grid-template-columns:1fr 1fr} }
+@media(max-width:580px){ .pricing-grid{grid-template-columns:1fr} }
+
+/* PIPELINE — vivid blue + progress line — misma forma CNC que Servicios (#svc-both) */
+.pipeline-shell{background:linear-gradient(to bottom, var(--paper-3) 0 50%, var(--paper-2) 50% 100%);margin:0;padding:0;border:none}
+.pipeline{border:none;outline:none;box-shadow:none;margin:0;margin-bottom:-1px;padding-block:clamp(4.5rem,8vw,7.5rem);background:var(--accent);color:#FFFFFF;--rule:rgba(255,255,255,.18);--rule-strong:rgba(255,255,255,.28);--ink:#FFFFFF;--ink-2:#E8EBFF;--ink-3:#C4C7FF;--ink-4:#99A7FF;position:relative;clip-path:url(#svc-both)}
+.pipeline .eyebrow{color:#C4C8D8;opacity:1}
+.pipeline .steps{position:relative}
+.pipeline .steps::before{content:"";position:absolute;top:34px;left:.8rem;right:.8rem;height:2px;background:rgba(255,255,255,.28);z-index:0}
+.pipeline .steps::after{content:"";position:absolute;top:34px;left:.8rem;height:2px;background:#FFFFFF;z-index:1;width:var(--prog, 0%);transition:width .12s linear}
+.pipeline .step{background:#FFFFFF;color:#111185;--ink-2:#2E32A3;--ink-3:#6B6ECC;--rule:rgba(17,17,133,.08);border-radius:14px;border:1px solid rgba(255,255,255,.9);box-shadow:0 4px 18px rgba(17,17,133,.10);transition:transform .22s, box-shadow .22s}
+.pipeline .step:hover{transform:translateY(-3px)}
+.pipeline .step__n{color:var(--accent)}
+.pipeline-header{display:grid;grid-template-columns:1fr 1fr;gap:3rem;margin-bottom:2.5rem;align-items:end}
+.pipeline-header h2{font-size:var(--tx-d2);font-weight:700;letter-spacing:var(--tk-h)}
+.pipeline-header p{color:var(--ink-2);font-size:var(--tx-sm)}
+.steps{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:1rem;background:transparent;border:none;padding:0}
+.step{ background:var(--paper);padding:1.2rem;display:flex;flex-direction:column;gap:.5rem;min-height:140px}
+.step__n{font-family:var(--font-m);font-size:var(--tx-xxs);color:var(--accent);letter-spacing:.08em}
+.step__t{font-weight:600;font-size:1.05rem;line-height:1.2}
+.step__d{font-size:.95rem;color:var(--ink-2);line-height:1.6}
+@media(max-width:900px){ .pipeline-header{grid-template-columns:1fr} .steps{grid-template-columns:1fr 1fr} }
+@media(max-width:520px){ .steps{grid-template-columns:1fr} }
+
+/* WHY LIVEENGINES — vivid blue with CNC clip (same as services/pipeline) */
+.why-shell{background:var(--paper);margin:0;padding:0;border:none}
+.why{border:none;outline:none;box-shadow:none;margin:0;margin-top:-1px;margin-bottom:-1px;padding-block:clamp(5rem,9vw,8rem);background:var(--accent);color:#FFFFFF;--rule:rgba(255,255,255,.18);--rule-strong:rgba(255,255,255,.28);--ink:#FFFFFF;--ink-2:#E8EBFF;--ink-3:#C4C7FF;--ink-4:#99A7FF;position:relative;clip-path:url(#svc-both)}
+.why .eyebrow{color:#C4C8D8;opacity:1}
+.why-header{display:grid;grid-template-columns:1fr;gap:1rem;margin-bottom:3rem;align-items:start}
+.why-header h2{font-size:var(--tx-d1);font-weight:700;letter-spacing:var(--tk-h);line-height:var(--lead-h)}
+.why-header p{color:var(--ink-2);font-size:var(--tx-body);line-height:var(--lead-body)}
+.why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+@media(max-width:1000px){ .why-grid{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:600px){ .why-grid{grid-template-columns:1fr} }
+.why-card{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:2rem;display:flex;flex-direction:column;align-items:center;gap:1rem;transition:transform .22s var(--ease-out), box-shadow .22s, border-color .22s;text-align:center}
+.why-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(17,17,133,.12);border-color:var(--accent-light)}
+.why-icon{width:48px;height:48px;display:grid;place-items:center;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);border-radius:12px;color:var(--accent-light);transition:background .2s, border-color .2s, color .2s}
+.why-card:hover .why-icon{background:var(--accent-light);border-color:var(--accent-light);color:#111185}
+.why-card h3{font-size:var(--tx-h3);font-weight:600;letter-spacing:-.01em;line-height:1.2}
+.why-card p{font-size:var(--tx-sm);color:var(--ink-2);line-height:1.6}
+.why-card p strong{color:var(--ink);font-weight:600}
+.why-cta{display:flex;flex-direction:column;align-items:center;gap:.75rem;margin-top:3rem;padding-top:2rem;border-top:none;width:100%;text-align:center}
+.why-cta__btn{font-family:var(--font-d);font-size:var(--tx-xs);font-weight:600;letter-spacing:var(--tk-label);text-transform:uppercase;color:#111185;background:#FFFFFF;border:1px solid #FFFFFF;padding:.75rem 2rem;border-radius:8px;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;transition:background .2s,border-color .2s,color .2s;position:relative;overflow:hidden;isolation:isolate}
+.why-cta__btn::before{content:"";position:absolute;left:0;right:0;bottom:0;height:0;background:var(--accent);transition:height .45s cubic-bezier(.4,0,.2,1);z-index:0;pointer-events:none}
+.why-cta__btn span{position:relative;z-index:1;transition:color .35s ease}
+.why-cta__btn:hover{color:#FFFFFF;border-color:var(--accent);background:#FFFFFF}
+.why-cta__btn:hover::before{height:100%}
+.why-cta__btn:hover span{color:#FFFFFF}
+.why-cta__note{font-family:var(--font-m);font-size:var(--tx-xxs);color:var(--ink-3);letter-spacing:.04em}
+@media(max-width:800px){ .why-header{grid-template-columns:1fr;gap:1rem} }
+
+/* DELIVERY — white section */
+.delivery{border-top:none;padding-block:clamp(4.5rem,8vw,7.5rem);background:var(--paper)}
+.delivery-header{display:grid;grid-template-columns:1fr;gap:1rem;margin-bottom:3rem;align-items:start;text-align:left}
+.delivery-header h2{font-size:var(--tx-d1);font-weight:700;letter-spacing:var(--tk-h);line-height:var(--lead-h);margin-inline:0}
+.delivery-header p{color:var(--ink-2);font-size:var(--tx-body);line-height:var(--lead-body);max-width:56ch}
+.delivery-header .eyebrow{text-align:left;margin-inline:0}
+.delivery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+@media(max-width:1000px){ .delivery-grid{grid-template-columns:repeat(2,1fr)} }
+@media(max-width:600px){ .delivery-grid{grid-template-columns:1fr} }
+.delivery-card{background:var(--paper);border:1px solid var(--rule-strong);border-radius:14px;padding:2rem;display:flex;flex-direction:column;gap:1rem;transition:transform .22s var(--ease-out), box-shadow .22s, border-color .22s}
+.delivery-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(17,17,133,.08);border-color:var(--accent-line)}
+.delivery-icon{width:48px;height:48px;display:grid;place-items:center;background:var(--paper-2);border:1px solid var(--rule-strong);border-radius:12px;color:var(--accent);transition:background .2s, border-color .2s, color .2s}
+.delivery-card:hover .delivery-icon{background:var(--accent);border-color:var(--accent);color:#111185}
+.delivery-card h3{font-size:var(--tx-h3);font-weight:600;letter-spacing:-.01em;line-height:1.2}
+.delivery-card p{font-size:var(--tx-sm);color:var(--ink-2);line-height:1.6}
+.delivery-card p strong{color:var(--ink);font-weight:600}
+.delivery-card code{font-family:var(--font-m);font-size:.85rem;background:var(--paper-2);padding:.15rem .4rem;border-radius:4px;color:var(--accent)}
+.delivery-list{list-style:none;display:flex;flex-direction:column;gap:.5rem;margin-top:.5rem}
+.delivery-list li{font-size:var(--tx-sm);color:var(--ink-2);display:flex;gap:.5rem;line-height:1.5}
+.delivery-list li span{font-family:var(--font-m);font-size:.7rem;color:var(--accent);font-weight:600}
+.delivery-note{margin-top:auto;font-family:var(--font-m);font-size:.7rem;color:var(--ink-3);letter-spacing:.04em;line-height:1.6;padding-top:.5rem;border-top:1px solid var(--rule)}
+
+/* USE CASES — white + tilt */
+.usecases{border-top:none;padding-block:clamp(4.5rem,8vw,7.5rem);background:var(--paper)}
+.usecase-card{transform-style:preserve-3d;transition:transform .22s var(--ease-out), box-shadow .22s, border-color .22s}
+.usecase-card:hover{border-color:var(--accent-line);box-shadow:0 14px 36px rgba(17,17,133,.08)}
+.usecase-header{margin-bottom:2rem;display:flex;justify-content:space-between;gap:2rem;align-items:end;flex-wrap:wrap}
+.usecase-header h2{font-size:var(--tx-d2);font-weight:700;letter-spacing:var(--tk-h)}
+.usecase-header p{max-width:420px;color:var(--ink-2);font-size:var(--tx-sm)}
+.usecase-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--rule-strong);border:1px solid var(--rule-strong);border-radius:16px;overflow:hidden;padding:1px}
+.usecase-card{border:none;background:var(--paper);overflow:hidden;display:flex;flex-direction:column}
+.usecase-visual{height:190px;background:var(--paper-2);position:relative;overflow:hidden;flex-shrink:0;border-bottom:1px solid var(--rule)}
+.usecase-visual canvas{width:100%;height:100%;display:block}
+.usecase-body{padding:1.4rem;display:flex;flex-direction:column;gap:.45rem;flex:1}
+.usecase-type{font-family:var(--font-m);font-size:var(--tx-xxs);letter-spacing:var(--tk-label);text-transform:uppercase;color:var(--accent)}
+.usecase-title{font-size:var(--tx-h3);font-weight:600;letter-spacing:-.01em}
+.usecase-desc{font-size:var(--tx-sm);color:var(--ink-2);line-height:1.6;flex:1}
+.usecase-tech{display:flex;flex-wrap:wrap;gap:.35rem;padding-top:.4rem}
+.usecase-tag{font-family:var(--font-m);font-size:.70rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);border:1px solid var(--rule-strong);padding:.20rem .50rem}
+@media(max-width:700px){ .usecase-grid{grid-template-columns:1fr} }
+
+/* INDUSTRIES — pale */
+.industries{border-top:none;padding-block:clamp(4.5rem,8vw,7.5rem);background:var(--paper-2)}
+.industries-header{margin-bottom:2rem}
+.industries-header h2{font-size:var(--tx-d2);font-weight:700;letter-spacing:var(--tk-h)}
+.industries-grid{display:flex;gap:1rem;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding-bottom:.8rem;-webkit-overflow-scrolling:touch;scrollbar-width:none}
+
+.industries-grid::-webkit-scrollbar{display:none}
+.ind-nav{display:flex;align-items:center;gap:10px}
+.ind-nav__box{width:48px;height:48px;background:#E8EBFF;border-radius:10px;display:grid;place-items:center;transition:background .2s}
+.ind-nav__box:hover{background:var(--color-accent) !important}
+.ind-nav__box:hover .ind-arrow{color:#fff !important}
+.ind-arrow{width:100%;height:100%;border:none;background:transparent;color:var(--color-accent);font-family:var(--font-display);font-weight:700;font-size:1.4rem;line-height:1;display:grid;place-items:center;cursor:pointer;transition:color .2s;opacity:1;transform:none}
+.ind-arrow.is-hidden{opacity:0;pointer-events:none;transform:scale(.85)}
+.industries-grid{scrollbar-width:none}
+.ind{ flex:0 0 300px;min-width:300px;scroll-snap-align:start;background:var(--paper);padding:1.3rem;display:flex;flex-direction:column;gap:0;border:1px solid var(--rule-strong);border-radius:14px;overflow:hidden;transition:transform .22s var(--ease-out), box-shadow .22s, border-color .22s;min-height:420px}
+.ind:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(17,17,133,.08);border-color:var(--accent-line)}
+.ind:hover .ind__k{font-family:var(--font-m);font-size:var(--tx-xxs);letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4)}
+.ind__t{font-weight:600;font-size:1.05rem;line-height:1.18;margin:0 0 15px}
+.ind__d{font-size:1.05rem;color:var(--ink-2);line-height:1.35;margin:25px 0}
+.ind__ex{font-family:var(--font-m);font-size:.80rem;color:var(--ink-3);line-height:1.5;margin:0}
+
+
+
+/* FAQ — accordion premium */
+.faq{border-top:none;padding-block:clamp(4.5rem,8vw,7.5rem);background:var(--paper)}
+.faq-header{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end;margin-bottom:2.2rem}
+.faq-header h2{font-size:var(--tx-d2);font-weight:700;letter-spacing:var(--tk-h)}
+.faq-header p{color:var(--ink-2);font-size:var(--tx-sm)}
+.faq-list{border:1px solid var(--rule-strong);border-radius:16px;overflow:hidden;background:var(--paper)}
+.faq-item{border-bottom:1px solid var(--rule);background:var(--paper);transition:background .2s}
+.faq-item:last-child{border-bottom:none}
+.faq-item.is-open{background:var(--paper-2)}
+.faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.25rem 1.4rem;background:transparent;border:none;cursor:pointer;font-family:var(--font-d);font-weight:600;font-size:1.05rem;text-align:left;color:var(--ink)}
+.faq-q span{flex:1}
+.faq-q i{flex:0 0 28px;height:28px;display:grid;place-items:center;border:1px solid var(--rule-strong);border-radius:50%;font-style:normal;font-size:.9rem;color:var(--ink-3);transition:background .2s,color .2s,transform .2s}
+.faq-item.is-open .faq-q i{background:var(--accent);color:#fff;border-color:var(--accent);transform:rotate(180deg)}
+.faq-a{padding:0 1.4rem 1.2rem;color:var(--ink-2);font-size:var(--tx-sm);line-height:1.65}
+.faq-a p{max-width:68ch}
+@media(max-width:800px){ .faq-header{grid-template-columns:1fr;gap:1rem} }
+
+/* FAQ — textos a la izquierda, cajón accordions a la derecha */
+.faq .wrap{display:grid;grid-template-columns:0.92fr 1.08fr;gap:clamp(2rem,4vw,3.5rem);align-items:start}
+.faq-header{display:flex !important;flex-direction:column !important;align-items:flex-start !important;text-align:left !important;justify-items:start !important;grid-template-columns:1fr !important;gap:.85rem !important;margin-bottom:0 !important}
+.faq-header > div{text-align:left !important;margin-inline:0 !important;justify-items:start !important;width:100%}
+.faq-header h2{text-align:left !important;margin-inline:0 !important;justify-self:start !important}
+.faq-header .eyebrow{text-align:left !important;margin-inline:0 !important;align-self:flex-start !important}
+.faq-header p{text-align:left !important;margin-inline:0 !important;max-width:38ch}
+@media(max-width:900px){ .faq .wrap{grid-template-columns:1fr} .faq-header{margin-bottom:1.2rem} }
+
+/* SLIDER demo — bolder slide */
+.usecase-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem}
+.usecase-card{background:var(--paper);border:1px solid var(--rule-strong);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;transition:transform .22s var(--ease-out), box-shadow .22s, border-color .22s}
+.usecase-card:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(17,17,133,.10);border-color:var(--accent-line)}
+@media(max-width:700px){ .usecase-grid{grid-template-columns:1fr} }
+
+/* SVC accordion */
+/* DARK MANIFESTO */
+.manifesto{padding-block:clamp(4.5rem,9vw,8rem)}
+.manifesto-inner{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2.5rem,6vw,5rem);align-items:start}
+.manifesto-left h2{font-size:var(--tx-d2);font-weight:700;letter-spacing:var(--tk-h);line-height:var(--lead-h)}
+.manifesto-principles{margin-top:1.6rem}
+.principle{padding-block:1.1rem;border-top:1px solid var(--rule);display:grid;grid-template-columns:28px 1fr;gap:1rem;align-items:start}
+.principle:last-child{border-bottom:1px solid var(--rule)}
+.principle-n{font-family:var(--font-m);font-size:var(--tx-xxs);color:var(--accent);letter-spacing:var(--tk-label);padding-top:3px}
+.principle-text{font-size:var(--tx-sm);line-height:var(--lead-body);color:var(--paper)}
+.principle-text strong{display:block;font-weight:600;font-size:var(--tx-body);color:var(--paper);margin-bottom:.2rem;letter-spacing:-.01em}
+.manifesto-right{display:flex;flex-direction:column;gap:2.2rem;padding-top:.6rem}
+.manifesto-quote{font-size:var(--tx-d2);font-weight:300;line-height:1.3;letter-spacing:var(--tk-h);color:var(--paper);opacity:.92}
+.manifesto-sub{font-family:var(--font-m);font-size:var(--tx-xs);color:var(--ink-3);letter-spacing:.04em;line-height:1.8}
+@media(max-width:800px){ .manifesto-inner{grid-template-columns:1fr} }
+
+/* CTA FINAL — vivid blue */
+.cta-final{padding-block:clamp(5rem,10vw,9rem);border-top:none;background:var(--accent);color:#FFFFFF;--rule:rgba(255,255,255,.18);--rule-strong:rgba(255,255,255,.28);--ink:#FFFFFF;--ink-2:#E8EBFF;--ink-3:#C4C7FF;--ink-4:#99A7FF}
+.cta-final .eyebrow{color:#FFFFFF;opacity:.8}
+.cta-final h2 em{color:#C4C7FF}
+.cta-final .btn-primary{background:#FFFFFF;color:#111185;border-color:#FFFFFF}
+.cta-final .btn-primary::before{background:var(--accent)}
+.cta-final .btn-primary:hover{color:#FFFFFF;border-color:var(--accent);background:#FFFFFF}
+.cta-final .btn-primary:hover::before{height:100%}
+.cta-final .btn-primary:hover span{color:#FFFFFF}
+.cta-final .btn-ghost{color:#FFFFFF}
+.cta-final .btn-ghost:hover{color:#E8EBFF}
+.cta-final__i{display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end}
+.cta-final h2{font-size:var(--tx-d1);font-weight:700;line-height:var(--lead-h);letter-spacing:var(--tk-h)}
+.cta-final h2 em{font-style:normal;color:var(--ink-3)}
+.cta-final__right{display:flex;flex-direction:column;gap:1.2rem;align-items:flex-start}
+.cta-final__right p{font-size:var(--tx-body);color:var(--ink-2);line-height:var(--lead-body)}
+.cta-final__mailto{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--font-m);font-size:var(--tx-xxs);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-3);text-decoration:none;border-bottom:1px solid rgba(255,255,255,.28);padding-bottom:.2rem;transition:color .2s,border-color .2s}
+.cta-final__mailto:hover{color:#FFFFFF;border-bottom-color:#FFFFFF}
+
+/* ─── Formulario de contacto ─────────────────────────────────────── */
+/* La tarjeta es blanca: dentro se restablece la paleta clara para que los
+   tokens de texto sigan funcionando como en el resto del sitio. `--ink-4` usa
+   el tono AA (5.75:1) porque las etiquetas van en cuerpo pequeño. */
+.cf{margin-top:clamp(2.5rem,5vw,4rem);background:var(--paper);border-radius:18px;padding:clamp(1.5rem,3.5vw,2.75rem);color:var(--ink);--ink:#111185;--ink-2:#2E32A3;--ink-3:#3E51C9;--ink-4:#565AC4;--rule:rgba(17,17,133,.12);--rule-strong:rgba(17,17,133,.2);box-shadow:0 24px 60px rgba(17,17,133,.22)}
+.cf__grid{display:grid;grid-template-columns:1.35fr .65fr;gap:clamp(1.75rem,4vw,3rem);align-items:start}
+
+.cf__head{grid-column:1/-1;display:flex;flex-direction:column;gap:.45rem;margin-bottom:.35rem}
+.cf__title{font-family:var(--font-display);font-size:clamp(1.2rem,2.2vw,1.6rem);font-weight:700;letter-spacing:-.01em;line-height:1.15}
+.cf__intro{font-size:.98rem;color:var(--ink-2);line-height:1.6;max-width:46rem}
+
+.cf__form{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.1rem}
+.cf__form>*{grid-column:1/-1}
+.cf__form>.cf__full{grid-column:auto}
+.cf__form>.cf__span2{grid-column:1/-1}
+
+.cf__field{display:flex;flex-direction:column;gap:.35rem;min-width:0}
+.cf__label{display:flex;align-items:baseline;gap:.4rem;font-family:var(--font-m);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+.cf__req{color:#B3261E}
+.cf__opt{font-size:.66rem;letter-spacing:.06em;color:var(--ink-4);text-transform:none}
+
+.cf__input,.cf__select,.cf__area{width:100%;font-family:var(--font-d);font-size:1rem;line-height:1.5;color:var(--ink);background:var(--paper);border:1px solid var(--rule-strong);border-radius:9px;padding:.7rem .85rem;transition:border-color .18s,box-shadow .18s;-webkit-appearance:none;appearance:none}
+.cf__area{resize:vertical;min-height:6.5rem;line-height:1.6}
+.cf__select{background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);background-position:calc(100% - 1.15rem) 1.18rem,calc(100% - .85rem) 1.18rem;background-size:.3rem .3rem,.3rem .3rem;background-repeat:no-repeat;padding-right:2.4rem;cursor:pointer}
+.cf__input::placeholder,.cf__area::placeholder{color:var(--ink-4);opacity:1}
+.cf__input:hover,.cf__select:hover,.cf__area:hover{border-color:var(--ink-4)}
+.cf__input:focus,.cf__select:focus,.cf__area:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(35,35,255,.16)}
+.cf__input:focus-visible,.cf__select:focus-visible,.cf__area:focus-visible{outline:none}
+
+.cf__count{align-self:flex-end;font-family:var(--font-m);font-size:.68rem;letter-spacing:.04em;color:var(--ink-4)}
+.cf__count[data-state="warn"]{color:#A85B00}
+.cf__count[data-state="ok"]{color:#0B6B43}
+
+/* Estado de error: el borde y el mensaje, no solo el color — el rojo solo
+   no basta: el error tiene que distinguirse sin depender del color. */
+.cf__field.is-invalid .cf__input,.cf__field.is-invalid .cf__select,.cf__field.is-invalid .cf__area{border-color:#B3261E;background:#FFF7F6}
+.cf__field.is-invalid .cf__input:focus,.cf__field.is-invalid .cf__area:focus,.cf__field.is-invalid .cf__select:focus{box-shadow:0 0 0 3px rgba(179,38,30,.18)}
+.cf__error{display:none;font-size:.8rem;line-height:1.45;color:#B3261E;font-weight:500}
+.cf__error::before{content:"⚠ "}
+.cf__field.is-invalid .cf__error{display:block}
+
+.cf__more{border:1px solid var(--rule);border-radius:11px;background:var(--paper-2)}
+.cf__more>summary{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.8rem 1rem;cursor:pointer;list-style:none;font-family:var(--font-m);font-size:.74rem;letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);font-weight:600}
+.cf__more>summary::-webkit-details-marker{display:none}
+.cf__more>summary:hover{color:var(--accent)}
+.cf__more>summary:focus-visible{outline:2px solid var(--accent);outline-offset:-2px}
+.cf__more>summary::after{content:"＋";font-size:1rem;color:var(--ink-4);transition:transform .2s}
+.cf__more[open]>summary::after{content:"−"}
+.cf__more__body{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.1rem;padding:.25rem 1rem 1.15rem}
+
+.cf__consent{grid-column:1/-1;display:flex;align-items:flex-start;gap:.6rem;font-size:.86rem;line-height:1.55;color:var(--ink-2);padding-top:.35rem;border-top:1px solid var(--rule)}
+.cf__consent input{flex:0 0 auto;width:1.05rem;height:1.05rem;margin:.18rem 0 0;accent-color:var(--accent);cursor:pointer}
+.cf__consent.is-invalid input{outline:2px solid #B3261E;outline-offset:2px}
+.cf__consent a{color:var(--accent-2);text-underline-offset:.16em}
+.cf__consent a:hover{color:var(--accent)}
+
+/* Honeypot: fuera de pantalla pero no oculto a los lectores de pantalla,
+   que si no lo leerían como un campo más. */
+.cf__hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+
+.cf__actions{grid-column:1/-1;display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap;padding-top:.35rem}
+.cf__submit{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;background:var(--ink);color:#FFFFFF;border:1px solid var(--ink);border-radius:9px;padding:.82rem 1.5rem;font-family:var(--font-d);font-size:.92rem;font-weight:600;letter-spacing:.01em;cursor:pointer;transition:opacity .2s,transform .2s}
+.cf__submit:hover:not(:disabled){transform:translateY(-1px)}
+.cf__submit:disabled{opacity:.55;cursor:not-allowed}
+.cf__submit:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+.cf__note{font-size:.78rem;color:var(--ink-4);line-height:1.5}
+
+.cf__status{display:none;margin-top:1.1rem;border-radius:11px;padding:.95rem 1.1rem;font-size:.9rem;line-height:1.6}
+.cf__status[data-state="sending"]{display:block;background:var(--paper-2);border:1px solid var(--rule-strong);color:var(--ink-2)}
+.cf__status[data-state="ok"]{display:block;background:#EFF8F2;border:1px solid #B9DFC9;color:#0B6B43}
+.cf__status[data-state="error"]{display:block;background:#FFF1EF;border:1px solid #F2C4BC;color:#B3261E}
+.cf__status strong{display:block;margin-bottom:.15rem;font-weight:600}
+.cf__status[data-state="ok"] strong::before{content:"✓ "}
+.cf__status[data-state="error"] strong::before{content:"⚠ "}
+
+.cf__aside{display:flex;flex-direction:column;gap:1.1rem;padding:1.25rem;background:var(--paper-2);border-radius:12px;border:1px solid var(--rule)}
+.cf__aside h3{font-family:var(--font-m);font-size:.7rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-4);font-weight:400;margin:0}
+.cf__aside ul{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.7rem}
+.cf__aside li{display:flex;gap:.6rem;font-size:.88rem;line-height:1.5;color:var(--ink-2)}
+.cf__aside li::before{content:"→";color:var(--accent);flex:0 0 auto;font-weight:600}
+.cf__aside a{color:var(--accent-2);word-break:break-word}
+
+@media (max-width:900px){
+  .cf__grid{grid-template-columns:1fr}
+}
+@media (max-width:560px){
+  .cf__form,.cf__more__body{grid-template-columns:1fr}
+  .cf__form>.cf__full,.cf__form>.cf__span2{grid-column:1/-1}
+  .cf__submit{width:100%}
+}
+@media(max-width:700px){ .cta-final__i{grid-template-columns:1fr;gap:2rem} }
+
+/* FOOTER — deep navy */
+.footer{border-top:none;padding-block:1.8rem;background:var(--ink);color:var(--paper);--rule:rgba(255,255,255,.1)}
+.footer .footer__copy{color:#99A7FF}
+.footer__i{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap}
+.footer__copy{font-family:var(--font-m);font-size:var(--tx-xxs);color:var(--ink-4);letter-spacing:.04em}
+.footer__legal{display:flex;align-items:center;gap:1.1rem;flex-wrap:wrap}
+.footer__legal a{font-family:var(--font-m);font-size:var(--tx-xxs);letter-spacing:.04em;color:#99A7FF;text-decoration:none;border-bottom:1px solid transparent;transition:border-color .2s}
+.footer__legal a:hover{color:#FFFFFF;border-bottom-color:rgba(255,255,255,.4)}
+.footer__legal a:focus-visible{outline-color:#99A7FF}
+
+/* REVEAL */
+@media(prefers-reduced-motion:no-preference){
+  .r{opacity:0;transform:translateY(18px);transition:opacity .6s var(--ease-snap),transform .6s var(--ease-snap)}
+  .r.on{opacity:1;transform:none}
+  .r-d1{transition-delay:.08s} .r-d2{transition-delay:.16s} .r-d3{transition-delay:.24s}
+}
+
+/* 7 headers centrados +25% — pedido */
+.transform-header, .bound-header, .services-header, .pricing-header, .pipeline-header, .industries-header, .faq-header{ text-align:center; justify-items:center; }
+.bound-header h2, .services-header h2, .pricing-header h2, .pipeline-header h2, .industries-header h2, .faq-header h2{
+  text-align:center;
+  font-size:clamp(2.91rem,5.7vw,4.79rem) !important;
+  line-height:1.05 !important;
+  margin-inline:auto;
+}
+.transform-header h2{
+  text-align:center;
+  font-size:clamp(2.91rem,5.7vw,4.79rem) !important;
+  line-height:1.05 !important;
+  margin-inline:auto;
+}
+.transform-header .eyebrow, .bound-header .eyebrow, .services-header .eyebrow, .pricing-header .eyebrow, .pipeline-header .eyebrow, .faq-header .eyebrow{ text-align:center; margin-inline:auto; }
+.industries-header .eyebrow, .why-header .eyebrow{ text-align:left !important; margin-inline:0 !important; }
+.industries-header, .industries-header h2, .industries-header .eyebrow, .industries-header p{ text-align:left !important; margin-inline:0 !important; justify-items:start !important; }
+.why-header, .why-header h2, .why-header .eyebrow, .why-header p{ text-align:left !important; margin-inline:0 !important; justify-items:start !important; }
+.bound-header, .services-header, .pipeline-header, .faq-header{ grid-template-columns:1fr !important; gap:1rem !important; }
+.industries-header{ grid-template-columns:1fr auto !important; gap:1.5rem !important; }
+.why-header{ grid-template-columns:1fr !important; gap:1rem !important; }
+.bound-header p, .services-header p, .pipeline-header p, .faq-header p, .transform-header p{ text-align:center; margin-inline:auto; }
+.industries-header, .industries-header h2, .industries-header .eyebrow, .industries-header p{ text-align:left !important; margin-inline:0 !important; justify-items:start !important; }
+
+
+/* grain solo en fondos azules */
+.hero::before, .services::before, .pipeline::before, .why::before, .section--dark::before, .cta-final::before, .footer::before{
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index:0;
+}
+.services > *, .pipeline > *, .why > *, .section--dark > *, .cta-final > *, .footer > *{position:relative;z-index:1}
+.hero, .services, .pipeline, .why, .section--dark, .cta-final, .footer{position:relative;overflow:hidden}
+
+
+/* 70px tras título+descripción antes de siguiente elemento */
+.transform-header, .bound-header, .services-header, .pricing-header, .pipeline-header, .industries-header, .faq-header, .why-header, .delivery-header{margin-bottom:120px !important}
+
+
+}
+
+
+/* Industries — left justify override */
+.industries-header, .industries-header h2, .industries-header .eyebrow, .industries-header p{ text-align:left !important; margin-inline:0 !important; justify-items:start !important; }
+.industries-header h2{ font-size:clamp(2.91rem,5.7vw,4.79rem) !important; line-height:1.05 !important; }
+
+</style>
+</head>
+<body>
+<svg width="0" height="0" aria-hidden="true" style="position:absolute"><defs>
+  <clipPath id="svc-both" clipPathUnits="objectBoundingBox"><path d="M0,0 L0.32,0 C0.33,0 0.335,0.035 0.35,0.035 L0.65,0.035 C0.665,0.035 0.67,0 0.68,0 L1,0 L1,1 L0.68,1 C0.67,1 0.665,0.965 0.65,0.965 L0.35,0.965 C0.335,0.965 0.33,1 0.32,1 L0,1 Z"/></clipPath>
+  <clipPath id="svc-top" clipPathUnits="objectBoundingBox"><path d="M0,0 L0.32,0 C0.33,0 0.335,0.035 0.35,0.035 L0.65,0.035 C0.665,0.035 0.67,0 0.68,0 L1,0 L1,1 L0,1 Z"/></clipPath>
+  <clipPath id="svc-bottom" clipPathUnits="objectBoundingBox"><path d="M0,0 H1 V1 L0.68,1 C0.67,1 0.665,0.965 0.65,0.965 L0.35,0.965 C0.335,0.965 0.33,1 0.32,1 L0,1 Z"/></clipPath>
+  <clipPath id="hero-cnc-bottom" clipPathUnits="objectBoundingBox"><path d="M0,0 H1 V1 L0.68,1 C0.67,1 0.665,0.965 0.65,0.965 L0.35,0.965 C0.335,0.965 0.33,1 0.32,1 L0,1 Z"/></clipPath>
+</defs></svg>
+<div class="progress" aria-hidden="true"></div>
+<!-- NAV — logo izquierda / pill centro / CTA derecha -->
+<nav class="nav" aria-label="{{attr:aria-label|nav}}">
+  <a href="#" class="nav__logo" aria-label="{{attr:aria-label|nav.nav__logo}}">
+    <img src="{{root}}images/le-logo.svg" alt="LiveEngines" width="115" height="35" style="width:115px;height:auto">
+  </a>
+  <div class="nav__center">
+    <div class="nav__pill">
+      <div class="nav__links">
+        <a href="#porque-liveengines">{{t:nav.nav__center.nav__pill.nav__links.a}}</a>
+        <a href="#servicios">{{t:nav.nav__center.nav__pill.nav__links.a.2}}</a>
+        <a href="#pricing">{{t:nav.nav__center.nav__pill.nav__links.a.3}}</a>
+        <a href="#proceso">{{t:nav.nav__center.nav__pill.nav__links.a.4}}</a>
+        <a href="#industrias">{{t:nav.nav__center.nav__pill.nav__links.a.5}}</a>
+        <a href="{{root}}library.html">{{t:nav.nav__center.nav__pill.nav__links.a.6}}</a>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:.6rem;align-items:center">
+    <a href="#contacto" class="nav__cta">{{t:nav.nav__cta}}</a>
+    <div class="nav__lang langsw" role="group" aria-label="{{attr:aria-label|nav.langsw}}">
+      <a class="langsw__opt{{#is_es}} is-active{{/is_es}}" href="{{url_es}}" hreflang="es" lang="es"{{#is_es}} aria-current="page"{{/is_es}}>ES</a>
+      <a class="langsw__opt{{#is_en}} is-active{{/is_en}}" href="{{url_en}}" hreflang="en" lang="en"{{#is_en}} aria-current="page"{{/is_en}}>EN</a>
+    </div>
+    <button class="nav__toggle" aria-label="{{attr:aria-label|nav.nav__toggle}}" aria-expanded="false" aria-controls="mobile"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div id="mobile" class="mobile" hidden>
+  <div class="langsw langsw--mobile" role="group" aria-label="{{attr:aria-label|nav.langsw}}">
+    <a class="langsw__opt{{#is_es}} is-active{{/is_es}}" href="{{url_es}}" hreflang="es" lang="es"{{#is_es}} aria-current="page"{{/is_es}}>ES</a>
+    <a class="langsw__opt{{#is_en}} is-active{{/is_en}}" href="{{url_en}}" hreflang="en" lang="en"{{#is_en}} aria-current="page"{{/is_en}}>EN</a>
+  </div>
+  <a href="#porque-liveengines">{{t:mobile.a}}</a>
+  <a href="#servicios">{{t:mobile.a.2}}</a>
+  <a href="#pricing">{{t:mobile.a.3}}</a>
+  <a href="#proceso">{{t:mobile.a.4}}</a>
+  <a href="#industrias">{{t:mobile.a.5}}</a>
+  <a href="#contacto">{{t:mobile.a.6}}</a>
+  <a href="{{root}}library.html">{{t:mobile.a.7}}</a>
+</div>
+
+<!-- HERO — background video loop (full-bleed, no layout impact) -->
+<section class="hero">
+  <video class="hero-video hero__background-video" autoplay muted loop playsinline preload="auto" aria-hidden="true">
+    <source src="{{root}}videos/vhoer1.mp4" type="video/mp4">
+  </video>
+  <div class="hero-overlay hero__video-overlay" aria-hidden="true"></div>
+  <div class="hero__canvas-wrap" aria-hidden="true"><canvas id="hero-canvas" aria-hidden="true"></canvas></div>
+  <div class="hero__content hero-content">
+    <div class="wrap">
+      <h1 class="hero__headline" id="hero-hl">
+        {{t:hero.hero-content.hero-hl}}<br>{{t:hero.hero-content.hero-hl.2}} <em>{{t:hero.hero-content.hero-hl.em}}</em>
+      </h1>
+      <div class="hero__sub-row">
+        <div>
+          <p class="hero__sub">{{t:hero.hero-content.hero__sub-row.hero__sub}} <strong>{{t:hero.hero-content.hero__sub-row.hero__sub.strong}}</strong>.</p>
+          <div class="hero__actions">
+            <a href="#servicios" class="btn-primary hero-cta"><span>{{t:hero.hero-content.hero__sub-row.hero__actions.hero-cta.span}}</span></a>
+            <a href="#demos" class="btn-ghost hero-cta"><span>{{t:hero.hero-content.hero__sub-row.hero__actions.hero-cta.span.2}}</span></a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+</section>
+
+<!-- STATEMENT / PROBLEMA — id="demos" is the target of the hero secondary CTA -->
+<section class="statement" id="demos">
+  <div class="wrap">
+    <div class="statement__grid">
+      <div>
+        <span class="eyebrow">{{t:statement.statement__grid.eyebrow}}</span>
+        <h2 class="statement__text r" style="margin-top:.5rem">{{t:statement.statement__grid.statement__text}}<br>{{t:statement.statement__grid.statement__text.2}}</h2>
+        
+        <div class="problem-callout" style="margin-top:1.5rem">
+          <strong>{{t:statement.statement__grid.problem-callout.strong}}</strong>
+          <span>{{t:statement.statement__grid.problem-callout.span}}</span>
+        </div>
+      </div>
+    </div>
+    <iframe class="statement__embed" src="https://ledemo.ai.studio" title="{{attr:title|statement.statement__embed}}" loading="lazy" allowfullscreen></iframe>
+      </div>
+</section>
+
+<!-- TRANSFORMATION — comparativa de ventajas, sin slider -->
+<section class="transform-section">
+  <div class="wrap">
+    <div class="transform-header r"><span class="eyebrow">{{t:transform-section.transform-header.eyebrow}}</span><h2><span style="white-space:nowrap">{{t:transform-section.transform-header.span}}</span><br><span style="white-space:nowrap">{{t:transform-section.transform-header.span.2}}</span></h2><p style="color:var(--color-text-secondary);margin-top:.6rem;font-size:var(--text-sm);max-width:56ch">{{t:transform-section.transform-header.p}}</p></div>
+    <div class="t-grid r r-d1">
+      <article class="t-card">
+        <div class="t-card__before"><span class="mono">{{t:transform-section.t-grid.t-card.t-card__before.mono}}</span><p class="t-quote t-quote--before">{{t:transform-section.t-grid.t-card.t-card__before.t-quote--before}}</p><span class="t-limit">{{t:transform-section.t-grid.t-card.t-card__before.t-limit}}</span></div>
+        <div class="t-card__arrow" aria-hidden="true">→</div>
+        <div class="t-card__after"><span class="mono" style="color:var(--color-accent)">{{t:transform-section.t-grid.t-card.t-card__after.mono}}</span><p class="t-quote t-quote--after">{{t:transform-section.t-grid.t-card.t-card__after.t-quote--after}}</p><span class="t-adv">{{t:transform-section.t-grid.t-card.t-card__after.t-adv}}</span></div>
+      </article>
+      <article class="t-card">
+        <div class="t-card__before"><span class="mono">{{t:transform-section.t-grid.t-card.t-card__before.mono.2}}</span><p class="t-quote t-quote--before">{{t:transform-section.t-grid.t-card.t-card__before.t-quote--before.2}}</p><span class="t-limit">{{t:transform-section.t-grid.t-card.t-card__before.t-limit.2}}</span></div>
+        <div class="t-card__arrow" aria-hidden="true">→</div>
+        <div class="t-card__after"><span class="mono" style="color:var(--color-accent)">{{t:transform-section.t-grid.t-card.t-card__after.mono.2}}</span><p class="t-quote t-quote--after">{{t:transform-section.t-grid.t-card.t-card__after.t-quote--after.2}}</p><span class="t-adv">{{t:transform-section.t-grid.t-card.t-card__after.t-adv.2}}</span></div>
+      </article>
+      <article class="t-card">
+        <div class="t-card__before"><span class="mono">{{t:transform-section.t-grid.t-card.t-card__before.mono.3}}</span><p class="t-quote t-quote--before">{{t:transform-section.t-grid.t-card.t-card__before.t-quote--before.3}}</p><span class="t-limit">{{t:transform-section.t-grid.t-card.t-card__before.t-limit.3}}</span></div>
+        <div class="t-card__arrow" aria-hidden="true">→</div>
+        <div class="t-card__after"><span class="mono" style="color:var(--color-accent)">{{t:transform-section.t-grid.t-card.t-card__after.mono.3}}</span><p class="t-quote t-quote--after">{{t:transform-section.t-grid.t-card.t-card__after.t-quote--after.3}}</p><span class="t-adv">{{t:transform-section.t-grid.t-card.t-card__after.t-adv.3}}</span></div>
+      </article>
+      <article class="t-card">
+        <div class="t-card__before"><span class="mono">{{t:transform-section.t-grid.t-card.t-card__before.mono.4}}</span><p class="t-quote t-quote--before">{{t:transform-section.t-grid.t-card.t-card__before.t-quote--before.4}}</p><span class="t-limit">{{t:transform-section.t-grid.t-card.t-card__before.t-limit.4}}</span></div>
+        <div class="t-card__arrow" aria-hidden="true">→</div>
+        <div class="t-card__after"><span class="mono" style="color:var(--color-accent)">{{t:transform-section.t-grid.t-card.t-card__after.mono.4}}</span><p class="t-quote t-quote--after">{{t:transform-section.t-grid.t-card.t-card__after.t-quote--after.4}}</p><span class="t-adv">{{t:transform-section.t-grid.t-card.t-card__after.t-adv.4}}</span></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- QUÉ HACEMOS / QUÉ NO HACEMOS -->
+<section id="que-hacemos" class="boundaries">
+  <div class="wrap">
+    <div class="bound-header r">
+      <div><span class="eyebrow">{{t:que-hacemos.bound-header.eyebrow}}</span><h2>{{t:que-hacemos.bound-header.h2}}<br>{{t:que-hacemos.bound-header.h2.2}}</h2></div>
+      <p>{{t:que-hacemos.bound-header.p}}</p>
+    </div>
+    <div class="bound-grid r r-d1">
+      <div class="bound-card bound-card--yes">
+        <h3>{{t:que-hacemos.bound-grid.bound-card--yes.h3}}</h3>
+        <ul class="bound-list">
+          <li><span>●</span> {{t:que-hacemos.bound-grid.bound-card--yes.bound-list.li}}</li>
+          <li><span>●</span> {{t:que-hacemos.bound-grid.bound-card--yes.bound-list.li.2}}</li>
+          <li><span>●</span> {{t:que-hacemos.bound-grid.bound-card--yes.bound-list.li.3}}</li>
+          <li><span>●</span> {{t:que-hacemos.bound-grid.bound-card--yes.bound-list.li.4}}</li>
+          <li><span>●</span> {{t:que-hacemos.bound-grid.bound-card--yes.bound-list.li.5}}</li>
+          <li><span>●</span> {{t:que-hacemos.bound-grid.bound-card--yes.bound-list.li.6}}</li>
+        </ul>
+      </div>
+      <div class="bound-card bound-card--no">
+        <h3>{{t:que-hacemos.bound-grid.bound-card--no.h3}}</h3>
+        <ul class="bound-list">
+          <li><span>✕</span> {{t:que-hacemos.bound-grid.bound-card--no.bound-list.li}}</li>
+          <li><span>✕</span> {{t:que-hacemos.bound-grid.bound-card--no.bound-list.li.2}}</li>
+          <li><span>✕</span> {{t:que-hacemos.bound-grid.bound-card--no.bound-list.li.3}}</li>
+          <li><span>✕</span> {{t:que-hacemos.bound-grid.bound-card--no.bound-list.li.4}}</li>
+          
+        </ul>
+        <p class="bound-note">{{t:que-hacemos.bound-grid.bound-card--no.bound-note}}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY LIVEENGINES — vivid blue with CNC clip -->
+<div class="why-shell">
+<section id="porque-liveengines" class="why">
+  <div class="wrap">
+    <div class="why-header r">
+      <div><span class="eyebrow">{{t:why-shell.porque-liveengines.why-header.eyebrow}}</span><h2>{{t:why-shell.porque-liveengines.why-header.h2}}<br>{{t:why-shell.porque-liveengines.why-header.h2.2}}</h2></div>
+      <p>{{t:why-shell.porque-liveengines.why-header.p}}</p>
+    </div>
+    <div class="why-grid r r-d1">
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <h3>{{t:why-shell.porque-liveengines.why-grid.why-card.h3}}</h3>
+        <p>{{t:why-shell.porque-liveengines.why-grid.why-card.p}} <strong>{{t:why-shell.porque-liveengines.why-grid.why-card.strong}}</strong> {{t:why-shell.porque-liveengines.why-grid.why-card.p.2}}</p>
+      </article>
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        </div>
+        <h3>{{t:why-shell.porque-liveengines.why-grid.why-card.h3.2}}</h3>
+        <p>{{t:why-shell.porque-liveengines.why-grid.why-card.p.3}} <strong>{{t:why-shell.porque-liveengines.why-grid.why-card.strong.2}}</strong> {{t:why-shell.porque-liveengines.why-grid.why-card.p.4}}</p>
+      </article>
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        </div>
+        <h3>{{t:why-shell.porque-liveengines.why-grid.why-card.h3.3}}</h3>
+        <p>{{t:why-shell.porque-liveengines.why-grid.why-card.p.5}} <strong>{{t:why-shell.porque-liveengines.why-grid.why-card.strong.3}}</strong>{{t:why-shell.porque-liveengines.why-grid.why-card.p.6}}</p>
+      </article>
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 6v6l4 2"></path></svg>
+        </div>
+        <h3>{{t:why-shell.porque-liveengines.why-grid.why-card.h3.4}}</h3>
+        <p>{{t:why-shell.porque-liveengines.why-grid.why-card.p.7}} <strong>{{t:why-shell.porque-liveengines.why-grid.why-card.strong.4}}</strong>{{t:why-shell.porque-liveengines.why-grid.why-card.p.8}}</p>
+      </article>
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <h3>{{t:why-shell.porque-liveengines.why-grid.why-card.h3.5}}</h3>
+        <p>{{t:why-shell.porque-liveengines.why-grid.why-card.p.9}} <strong>{{t:why-shell.porque-liveengines.why-grid.why-card.strong.5}}</strong>{{t:why-shell.porque-liveengines.why-grid.why-card.p.10}}</p>
+      </article>
+      <article class="why-card">
+        <div class="why-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        </div>
+        <h3>{{t:why-shell.porque-liveengines.why-grid.why-card.h3.6}}</h3>
+        <p>{{t:why-shell.porque-liveengines.why-grid.why-card.p.11}} <strong>{{t:why-shell.porque-liveengines.why-grid.why-card.strong.6}}</strong>{{t:why-shell.porque-liveengines.why-grid.why-card.p.12}}</p>
+      </article>
+    </div>
+    <div class="why-cta r r-d1">
+      <a href="#contacto" class="btn-primary why-cta__btn"><span>{{t:why-shell.porque-liveengines.why-cta.why-cta__btn.span}}</span></a>
+      <p class="why-cta__note">{{t:why-shell.porque-liveengines.why-cta.why-cta__note}}</p>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- DELIVERY & DEPLOYMENT — white section -->
+<section id="entrega" class="delivery">
+  <div class="wrap">
+    <div class="delivery-header r">
+      <div><span class="eyebrow">{{t:entrega.delivery-header.eyebrow}}</span><h2>{{t:entrega.delivery-header.h2}}<br>{{t:entrega.delivery-header.h2.2}}</h2></div>
+      <p>{{t:entrega.delivery-header.p}}</p>
+    </div>
+    <div class="delivery-grid r r-d1">
+      <article class="delivery-card">
+        <div class="delivery-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M2 12h20"></path><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        </div>
+        <h3>{{t:entrega.delivery-grid.delivery-card.h3}}</h3>
+        <p>{{t:entrega.delivery-grid.delivery-card.p}}</p>
+        <ul class="delivery-list">
+          <li><span>✕</span> {{t:entrega.delivery-grid.delivery-card.delivery-list.li}}</li>
+          <li><span>✕</span> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.2}}</li>
+          <li><span>✕</span> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.3}}</li>
+          <li><span>✕</span> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.4}}</li>
+        </ul>
+        <p class="delivery-note"><strong>{{t:entrega.delivery-grid.delivery-card.delivery-note.strong}}</strong> <code>{{t:entrega.delivery-grid.delivery-card.delivery-note.code}}</code> {{t:entrega.delivery-grid.delivery-card.delivery-note}} <code>{{t:entrega.delivery-grid.delivery-card.delivery-note.code.2}}</code></p>
+      </article>
+      <article class="delivery-card">
+        <div class="delivery-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+        </div>
+        <h3>{{t:entrega.delivery-grid.delivery-card.h3.2}}</h3>
+        <p>{{t:entrega.delivery-grid.delivery-card.p.2}}</p>
+        <ul class="delivery-list">
+          <li><span>→</span> <strong>{{t:entrega.delivery-grid.delivery-card.delivery-list.strong}}</strong> <code>{{t:entrega.delivery-grid.delivery-card.delivery-list.code}}</code></li>
+          <li><span>→</span> <strong>{{t:entrega.delivery-grid.delivery-card.delivery-list.strong.2}}</strong> <code>{{t:entrega.delivery-grid.delivery-card.delivery-list.code.2}}</code> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.5}}</li>
+          <li><span>→</span> <strong>{{t:entrega.delivery-grid.delivery-card.delivery-list.strong.3}}</strong> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.6}}</li>
+        </ul>
+      </article>
+      <article class="delivery-card">
+        <div class="delivery-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </div>
+        <h3>{{t:entrega.delivery-grid.delivery-card.h3.3}}</h3>
+        <p>{{t:entrega.delivery-grid.delivery-card.p.3}}</p>
+        <ul class="delivery-list">
+          <li><span>→</span> <strong>{{t:entrega.delivery-grid.delivery-card.delivery-list.strong.4}}</strong> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.7}}</li>
+          <li><span>→</span> <strong>{{t:entrega.delivery-grid.delivery-card.delivery-list.strong.5}}</strong> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.8}}</li>
+          <li><span>→</span> <strong>{{t:entrega.delivery-grid.delivery-card.delivery-list.strong.6}}</strong> <code>{{t:entrega.delivery-grid.delivery-card.delivery-list.code.3}}</code> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.9}}</li>
+        </ul>
+      </article>
+      <article class="delivery-card">
+        <div class="delivery-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+        </div>
+        <h3>{{t:entrega.delivery-grid.delivery-card.h3.4}}</h3>
+        <p>{{t:entrega.delivery-grid.delivery-card.p.4}}</p>
+        <ul class="delivery-list">
+          <li><span>✕</span> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.10}}</li>
+          <li><span>✕</span> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.11}}</li>
+          <li><span>✕</span> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.12}}</li>
+        </ul>
+        <p class="delivery-note">{{t:entrega.delivery-grid.delivery-card.delivery-note.2}}</p>
+      </article>
+      <article class="delivery-card">
+        <div class="delivery-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><path d="M8 21h8"></path><path d="M12 17v4"></path></svg>
+        </div>
+        <h3>{{t:entrega.delivery-grid.delivery-card.h3.5}}</h3>
+        <p>{{t:entrega.delivery-grid.delivery-card.p.5}}</p>
+        <ul class="delivery-list">
+          <li><span>→</span> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.13}}</li>
+          <li><span>→</span> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.14}}</li>
+          <li><span>→</span> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.15}}</li>
+        </ul>
+      </article>
+      <article class="delivery-card">
+        <div class="delivery-icon" aria-hidden="true">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+        </div>
+        <h3>{{t:entrega.delivery-grid.delivery-card.h3.6}}</h3>
+        <p>{{t:entrega.delivery-grid.delivery-card.p.6}}</p>
+        <ul class="delivery-list">
+          <li><span>$</span> <strong>{{t:entrega.delivery-grid.delivery-card.delivery-list.strong.7}}</strong> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.16}}</li>
+          <li><span>$</span> <strong>{{t:entrega.delivery-grid.delivery-card.delivery-list.strong.8}}</strong> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.17}}</li>
+          <li><span>{{t:entrega.delivery-grid.delivery-card.delivery-list.span}}</span> <strong>{{t:entrega.delivery-grid.delivery-card.delivery-list.strong.9}}</strong> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.18}}</li>
+          <li><span>+</span> <strong>{{t:entrega.delivery-grid.delivery-card.delivery-list.strong.10}}</strong> {{t:entrega.delivery-grid.delivery-card.delivery-list.li.19}}</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICIOS — envoltura gris claro para gaps CNC (sup blanco, inf paper-3) -->
+<div class="services-shell">
+<section id="servicios" class="services">
+  <div class="wrap">
+    <div class="services-header r">
+      <div><span class="eyebrow">{{t:services-shell.servicios.services-header.eyebrow}}</span><h2>{{t:services-shell.servicios.services-header.h2}}<br>{{t:services-shell.servicios.services-header.h2.2}}</h2></div>
+      <p>{{t:services-shell.servicios.services-header.p}}<br>{{t:services-shell.servicios.services-header.p.2}}</p>
+    </div>
+    <div class="svc-grid r r-d1">
+      <div class="svc">
+        <div class="svc-visual"><canvas id="c1" width="400" height="160"></canvas></div>
+        <div class="svc__head"><span class="svc__num">{{t:services-shell.servicios.svc-grid.svc.svc__head.svc__num}}</span></div>
+        <h3 class="svc__title">{{t:services-shell.servicios.svc-grid.svc.svc__title}}</h3>
+        <p class="svc__desc"><strong>{{t:services-shell.servicios.svc-grid.svc.svc__desc.strong}}</strong> {{t:services-shell.servicios.svc-grid.svc.svc__desc}}</p>
+        <p class="mono" style="margin-top:.8rem;color:var(--color-text-muted);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase">{{t:services-shell.servicios.svc-grid.svc.mono}}</p>
+        <ul class="svc__list"><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li}}</li><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.2}}</li><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.3}}</li></ul>
+        <p class="svc__ideal">{{t:services-shell.servicios.svc-grid.svc.svc__ideal}} <strong>{{t:services-shell.servicios.svc-grid.svc.svc__ideal.strong}}</strong> {{t:services-shell.servicios.svc-grid.svc.svc__ideal.2}}</p>
+      </div>
+      <div class="svc">
+        <div class="svc-visual"><canvas id="c3" width="400" height="160"></canvas></div>
+        <div class="svc__head"><span class="svc__num">{{t:services-shell.servicios.svc-grid.svc.svc__head.svc__num.2}}</span></div>
+        <h3 class="svc__title">{{t:services-shell.servicios.svc-grid.svc.svc__title.2}}</h3>
+        <p class="svc__desc"><strong>{{t:services-shell.servicios.svc-grid.svc.svc__desc.strong.2}}</strong> {{t:services-shell.servicios.svc-grid.svc.svc__desc.2}}</p>
+        <p class="mono" style="margin-top:.8rem;color:var(--color-text-muted);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase">{{t:services-shell.servicios.svc-grid.svc.mono.2}}</p>
+        <ul class="svc__list"><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.4}}</li><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.5}}</li><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.6}}</li></ul>
+        <p class="svc__ideal">{{t:services-shell.servicios.svc-grid.svc.svc__ideal.3}} <strong>{{t:services-shell.servicios.svc-grid.svc.svc__ideal.strong.2}}</strong> {{t:services-shell.servicios.svc-grid.svc.svc__ideal.4}}</p>
+      </div>
+      <div class="svc">
+        <div class="svc-visual"><canvas id="c2" width="400" height="160"></canvas></div>
+        <div class="svc__head"><span class="svc__num">{{t:services-shell.servicios.svc-grid.svc.svc__head.svc__num.3}}</span></div>
+        <h3 class="svc__title">{{t:services-shell.servicios.svc-grid.svc.svc__title.3}}</h3>
+        <p class="svc__desc"><strong>{{t:services-shell.servicios.svc-grid.svc.svc__desc.strong.3}}</strong> {{t:services-shell.servicios.svc-grid.svc.svc__desc.3}}</p>
+        <p class="mono" style="margin-top:.8rem;color:var(--color-text-muted);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase">{{t:services-shell.servicios.svc-grid.svc.mono.3}}</p>
+        <ul class="svc__list"><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.7}}</li><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.8}}</li><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.9}}</li></ul>
+        <p class="svc__ideal">{{t:services-shell.servicios.svc-grid.svc.svc__ideal.5}} <strong>{{t:services-shell.servicios.svc-grid.svc.svc__ideal.strong.3}}</strong> {{t:services-shell.servicios.svc-grid.svc.svc__ideal.6}}</p>
+      </div>
+      <div class="svc">
+        <div class="svc-visual"><canvas id="c4" width="400" height="160"></canvas></div>
+        <div class="svc__head"><span class="svc__num">{{t:services-shell.servicios.svc-grid.svc.svc__head.svc__num.4}}</span></div>
+        <h3 class="svc__title">{{t:services-shell.servicios.svc-grid.svc.svc__title.4}}</h3>
+        <p class="svc__desc"><strong>{{t:services-shell.servicios.svc-grid.svc.svc__desc.strong.4}}</strong> {{t:services-shell.servicios.svc-grid.svc.svc__desc.4}}</p>
+        <p class="mono" style="margin-top:.8rem;color:var(--color-text-muted);font-size:.78rem;letter-spacing:.06em;text-transform:uppercase">{{t:services-shell.servicios.svc-grid.svc.mono.4}}</p>
+        <ul class="svc__list"><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.10}}</li><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.11}}</li><li>{{t:services-shell.servicios.svc-grid.svc.svc__list.li.12}}</li></ul>
+        <p class="svc__ideal">{{t:services-shell.servicios.svc-grid.svc.svc__ideal.7}} <strong>{{t:services-shell.servicios.svc-grid.svc.svc__ideal.strong.4}}</strong> {{t:services-shell.servicios.svc-grid.svc.svc__ideal.8}}</p>
+      </div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- PRICING — pale periwinkle -->
+<section id="pricing" class="pricing">
+  <div class="wrap">
+    <div class="pricing-header r">
+      <div><span class="eyebrow">{{t:pricing.pricing-header.eyebrow}}</span><h2>{{t:pricing.pricing-header.h2}}<br>{{t:pricing.pricing-header.h2.2}}</h2></div>
+      <p>{{t:pricing.pricing-header.p}}</p>
+    </div>
+    <div class="pricing-grid r r-d1">
+      <div class="price">
+        <span class="price__badge">{{t:pricing.pricing-grid.price.price__badge}}</span>
+        <p class="price__name">{{t:pricing.pricing-grid.price.price__name}}</p>
+        <p class="price__cost">{{t:pricing.pricing-grid.price.price__cost}}</p>
+        <p class="price__desc">{{t:pricing.pricing-grid.price.price__desc}}</p>
+        <ul class="price__list"><li>{{t:pricing.pricing-grid.price.price__list.li}}</li><li>{{t:pricing.pricing-grid.price.price__list.li.2}}</li><li>{{t:pricing.pricing-grid.price.price__list.li.3}}</li></ul>
+        <p style="font-size:.70rem;color:var(--ink-3);margin-top:.4rem">{{t:pricing.pricing-grid.price.p}}</p>
+        <div class="price__cta"><a href="#contacto" data-level="explore">{{t:pricing.pricing-grid.price.price__cta.a}}</a></div>
+      </div>
+      <div class="price price--feat">
+        <span class="price__badge">{{t:pricing.pricing-grid.price.price__badge.2}}</span>
+        <p class="price__name">{{t:pricing.pricing-grid.price.price__name.2}}</p>
+        <p class="price__cost">{{t:pricing.pricing-grid.price.price__cost.2}}</p>
+        <p class="price__desc">{{t:pricing.pricing-grid.price.price__desc.2}}</p>
+        <ul class="price__list"><li>{{t:pricing.pricing-grid.price.price__list.li.4}}</li><li>{{t:pricing.pricing-grid.price.price__list.li.5}}</li><li>{{t:pricing.pricing-grid.price.price__list.li.6}}</li></ul>
+        <div class="price__cta"><a href="#contacto" data-level="experience">{{t:pricing.pricing-grid.price.price__cta.a.2}}</a></div>
+      </div>
+      <div class="price">
+        <span class="price__badge">{{t:pricing.pricing-grid.price.price__badge.3}}</span>
+        <p class="price__name">{{t:pricing.pricing-grid.price.price__name.3}}</p>
+        <p class="price__cost">{{t:pricing.pricing-grid.price.price__cost.3}}</p>
+        <p class="price__desc">{{t:pricing.pricing-grid.price.price__desc.3}}</p>
+        <ul class="price__list"><li>{{t:pricing.pricing-grid.price.price__list.li.7}}</li><li>{{t:pricing.pricing-grid.price.price__list.li.8}}</li><li>{{t:pricing.pricing-grid.price.price__list.li.9}}</li></ul>
+        <div class="price__cta"><a href="#contacto" data-level="simulate">{{t:pricing.pricing-grid.price.price__cta.a.3}}</a></div>
+      </div>
+      <div class="price">
+        <span class="price__badge">{{t:pricing.pricing-grid.price.price__badge.4}}</span>
+        <p class="price__name">{{t:pricing.pricing-grid.price.price__name.4}}</p>
+        <p class="price__cost">{{t:pricing.pricing-grid.price.price__cost.4}}</p>
+        <p class="price__desc">{{t:pricing.pricing-grid.price.price__desc.4}}</p>
+        <ul class="price__list"><li>{{t:pricing.pricing-grid.price.price__list.li.10}}</li><li>{{t:pricing.pricing-grid.price.price__list.li.11}}</li><li>{{t:pricing.pricing-grid.price.price__list.li.12}}</li></ul>
+        <div class="price__cta"><a href="#contacto" data-level="connect">{{t:pricing.pricing-grid.price.price__cta.a.4}}</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PIPELINE — envoltura gris claro para que los gaps CNC no muestren blanco -->
+<div class="pipeline-shell">
+<section id="proceso" class="pipeline">
+  <div class="wrap">
+    <div class="pipeline-header r">
+      <div><span class="eyebrow">{{t:pipeline-shell.proceso.pipeline-header.eyebrow}}</span><h2>{{t:pipeline-shell.proceso.pipeline-header.h2}}<br>{{t:pipeline-shell.proceso.pipeline-header.h2.2}}</h2></div>
+      <p>{{t:pipeline-shell.proceso.pipeline-header.p}}<br>{{t:pipeline-shell.proceso.pipeline-header.p.2}}</p>
+    </div>
+    <div class="steps r r-d1">
+      <div class="step"><span class="step__n">01</span><p class="step__t">{{t:pipeline-shell.proceso.steps.step.step__t}}</p><p class="step__d">{{t:pipeline-shell.proceso.steps.step.step__d}}</p></div>
+      <div class="step"><span class="step__n">02</span><p class="step__t">{{t:pipeline-shell.proceso.steps.step.step__t.2}}</p><p class="step__d">{{t:pipeline-shell.proceso.steps.step.step__d.2}}</p></div>
+      <div class="step"><span class="step__n">03</span><p class="step__t">{{t:pipeline-shell.proceso.steps.step.step__t.3}}</p><p class="step__d">{{t:pipeline-shell.proceso.steps.step.step__d.3}}</p></div>
+      <div class="step"><span class="step__n">04</span><p class="step__t">{{t:pipeline-shell.proceso.steps.step.step__t.4}}</p><p class="step__d">{{t:pipeline-shell.proceso.steps.step.step__d.4}}</p></div>
+      <div class="step"><span class="step__n">05</span><p class="step__t">{{t:pipeline-shell.proceso.steps.step.step__t.5}}</p><p class="step__d">{{t:pipeline-shell.proceso.steps.step.step__d.5}}</p></div>
+    </div>
+  </div>
+</section>
+</div>
+
+<!-- INDUSTRIES — reescrita por problema, no por formato -->
+<section id="industrias" class="industries">
+  <div class="wrap">
+    <div class="industries-header r" style="display:flex;justify-content:space-between;align-items:end;gap:1.5rem;flex-wrap:wrap">
+      <div><span class="eyebrow">{{t:industrias.industries-header.eyebrow}}</span><h2>{{t:industrias.industries-header.h2}}<br>{{t:industrias.industries-header.h2.2}}</h2></div>
+      <div class="ind-nav" style="margin:0;display:flex;gap:10px">
+        <div class="ind-nav__box"><button class="ind-arrow ind-prev" id="ind-prev" aria-label="{{attr:aria-label|industrias.industries-header.ind-nav.ind-nav__box.ind-prev}}">{{t:industrias.industries-header.ind-nav.ind-nav__box.ind-prev.2}}</button></div>
+        <div class="ind-nav__box"><button class="ind-arrow ind-next" id="ind-next" aria-label="{{attr:aria-label|industrias.industries-header.ind-nav.ind-nav__box.ind-next}}">{{t:industrias.industries-header.ind-nav.ind-nav__box.ind-next.2}}</button></div>
+      </div>
+    </div>
+    <div class="industries-grid r r-d1">
+      <div class="ind"><div class="thumb" style="margin:-1.3rem -1.3rem 1rem;height:250px;border-radius:12px 12px 0 0;border:none;border-bottom:1px solid var(--color-border-strong)"><img src="https://images.unsplash.com/photo-1504307651254-35680f356dfd?q=80&w=640&auto=format&fit=crop" alt="{{attr:alt|industrias.industries-grid.ind.thumb.img}}" loading="lazy"><span class="thumb__label">{{t:industrias.industries-grid.ind.thumb.thumb__label}}</span></div><p class="ind__t">{{t:industrias.industries-grid.ind.ind__t}}</p><p class="ind__d">{{t:industrias.industries-grid.ind.ind__d}}</p><p class="ind__ex">{{t:industrias.industries-grid.ind.ind__ex}}</p></div>
+      <div class="ind"><div class="thumb" style="margin:-1.3rem -1.3rem 1rem;height:250px;border-radius:12px 12px 0 0;border:none;border-bottom:1px solid var(--color-border-strong)"><img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=640&auto=format&fit=crop" alt="{{attr:alt|industrias.industries-grid.ind.thumb.img.2}}" loading="lazy"><span class="thumb__label">{{t:industrias.industries-grid.ind.thumb.thumb__label.2}}</span></div><p class="ind__t">{{t:industrias.industries-grid.ind.ind__t.2}}</p><p class="ind__d">{{t:industrias.industries-grid.ind.ind__d.2}}</p><p class="ind__ex">{{t:industrias.industries-grid.ind.ind__ex.2}}</p></div>
+      <div class="ind"><div class="thumb" style="margin:-1.3rem -1.3rem 1rem;height:250px;border-radius:12px 12px 0 0;border:none;border-bottom:1px solid var(--color-border-strong)"><img src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=640&auto=format&fit=crop" alt="{{attr:alt|industrias.industries-grid.ind.thumb.img.3}}" loading="lazy"><span class="thumb__label">{{t:industrias.industries-grid.ind.thumb.thumb__label.3}}</span></div><p class="ind__t">{{t:industrias.industries-grid.ind.ind__t.3}}</p><p class="ind__d">{{t:industrias.industries-grid.ind.ind__d.3}}</p><p class="ind__ex">{{t:industrias.industries-grid.ind.ind__ex.3}}</p></div>
+      <div class="ind"><div class="thumb" style="margin:-1.3rem -1.3rem 1rem;height:250px;border-radius:12px 12px 0 0;border:none;border-bottom:1px solid var(--color-border-strong)"><img src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=640&auto=format&fit=crop" alt="{{attr:alt|industrias.industries-grid.ind.thumb.img.4}}" loading="lazy"><span class="thumb__label">{{t:industrias.industries-grid.ind.thumb.thumb__label.4}}</span></div><p class="ind__t">{{t:industrias.industries-grid.ind.ind__t.4}}</p><p class="ind__d">{{t:industrias.industries-grid.ind.ind__d.4}}</p><p class="ind__ex">{{t:industrias.industries-grid.ind.ind__ex.4}}</p></div>
+      <div class="ind"><div class="thumb" style="margin:-1.3rem -1.3rem 1rem;height:250px;border-radius:12px 12px 0 0;border:none;border-bottom:1px solid var(--color-border-strong)"><img src="https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=640&auto=format&fit=crop" alt="{{attr:alt|industrias.industries-grid.ind.thumb.img.5}}" loading="lazy"><span class="thumb__label">{{t:industrias.industries-grid.ind.thumb.thumb__label.5}}</span></div><p class="ind__t">{{t:industrias.industries-grid.ind.ind__t.5}}</p><p class="ind__d">{{t:industrias.industries-grid.ind.ind__d.5}}</p><p class="ind__ex">{{t:industrias.industries-grid.ind.ind__ex.5}}</p></div>
+      <div class="ind"><div class="thumb" style="margin:-1.3rem -1.3rem 1rem;height:250px;border-radius:12px 12px 0 0;border:none;border-bottom:1px solid var(--color-border-strong)"><img src="https://images.unsplash.com/photo-1507413245164-6160d8298b31?q=80&w=640&auto=format&fit=crop" alt="{{attr:alt|industrias.industries-grid.ind.thumb.img.6}}" loading="lazy"><span class="thumb__label">{{t:industrias.industries-grid.ind.thumb.thumb__label.6}}</span></div><p class="ind__t">{{t:industrias.industries-grid.ind.ind__t.6}}</p><p class="ind__d">{{t:industrias.industries-grid.ind.ind__d.6}}</p><p class="ind__ex">{{t:industrias.industries-grid.ind.ind__ex.6}}</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ — accordion -->
+<section class="faq">
+  <div class="wrap">
+    <div class="faq-header r">
+      <div><span class="eyebrow">{{t:faq.faq-header.eyebrow}}</span><h2>{{t:faq.faq-header.h2}}</h2></div>
+      <p style="max-width:42ch;color:var(--color-text-secondary);font-size:var(--text-sm)">{{t:faq.faq-header.p}}</p>
+    </div>
+    <div class="faq-list r r-d1">
+      <div class="faq-item is-open">
+        <button class="faq-q" aria-expanded="true"><span>{{t:faq.faq-list.faq-item.faq-q.span}}</span><i>—</i></button>
+        <div class="faq-a"><p>{{t:faq.faq-list.faq-item.faq-a.p}} <strong>{{t:faq.faq-list.faq-item.faq-a.strong}}</strong> {{t:faq.faq-list.faq-item.faq-a.p.2}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.2}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.3}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.3}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.4}} <strong>{{t:faq.faq-list.faq-item.faq-a.strong.2}}</strong> {{t:faq.faq-list.faq-item.faq-a.p.5}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.4}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.6}} <strong>{{t:faq.faq-list.faq-item.faq-a.strong.3}}</strong> {{t:faq.faq-list.faq-item.faq-a.p.7}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.5}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.8}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.6}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.9}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.7}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.10}} <code>{{t:faq.faq-list.faq-item.faq-a.code}}</code> {{t:faq.faq-list.faq-item.faq-a.p.11}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.8}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.12}} <strong>{{t:faq.faq-list.faq-item.faq-a.strong.4}}</strong> {{t:faq.faq-list.faq-item.faq-a.p.13}} <code>{{t:faq.faq-list.faq-item.faq-a.code.2}}</code>; <strong>{{t:faq.faq-list.faq-item.faq-a.strong.5}}</strong> {{t:faq.faq-list.faq-item.faq-a.p.14}} <code>{{t:faq.faq-list.faq-item.faq-a.code.3}}</code> {{t:faq.faq-list.faq-item.faq-a.p.15}} <strong>{{t:faq.faq-list.faq-item.faq-a.strong.6}}</strong> {{t:faq.faq-list.faq-item.faq-a.p.16}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.9}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.17}} <strong>{{t:faq.faq-list.faq-item.faq-a.strong.7}}</strong>{{t:faq.faq-list.faq-item.faq-a.p.18}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.10}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.19}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.11}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.20}} <strong>{{t:faq.faq-list.faq-item.faq-a.strong.8}}</strong> {{t:faq.faq-list.faq-item.faq-a.p.21}}<code>{{t:faq.faq-list.faq-item.faq-a.code.4}}</code>); <strong>{{t:faq.faq-list.faq-item.faq-a.strong.9}}</strong> {{t:faq.faq-list.faq-item.faq-a.p.22}}</p></div>
+      </div>
+      <div class="faq-item">
+        <button class="faq-q" aria-expanded="false"><span>{{t:faq.faq-list.faq-item.faq-q.span.12}}</span><i>+</i></button>
+        <div class="faq-a" hidden><p>{{t:faq.faq-list.faq-item.faq-a.p.23}}<code>{{t:faq.faq-list.faq-item.faq-a.code.5}}</code>{{t:faq.faq-list.faq-item.faq-a.p.24}}</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- DARK MANIFESTO -->
+<section class="section section--dark manifesto">
+  <div class="wrap">
+    <div class="manifesto-inner">
+      <div class="manifesto-left">
+        <span class="eyebrow">{{t:manifesto.manifesto-inner.manifesto-left.eyebrow}}</span>
+        <h2>{{t:manifesto.manifesto-inner.manifesto-left.h2}}</h2>
+        <div class="manifesto-principles">
+          <div class="principle"><span class="principle-n">01</span><p class="principle-text"><strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.strong}}</strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text}}</p></div>
+          <div class="principle"><span class="principle-n">02</span><p class="principle-text"><strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.strong.2}}</strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.2}}</p></div>
+          <div class="principle"><span class="principle-n">03</span><p class="principle-text"><strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.strong.3}}</strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.3}}</p></div>
+          <div class="principle"><span class="principle-n">04</span><p class="principle-text"><strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.strong.4}}</strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.4}}</p></div>
+          <div class="principle"><span class="principle-n">05</span><p class="principle-text"><strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.strong.5}}</strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.5}}</p></div>
+          <div class="principle"><span class="principle-n">06</span><p class="principle-text"><strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.strong.6}}</strong>{{t:manifesto.manifesto-inner.manifesto-left.manifesto-principles.principle.principle-text.6}}</p></div>
+        </div>
+      </div>
+      <div class="manifesto-right r">
+        <p class="manifesto-quote">{{t:manifesto.manifesto-inner.manifesto-right.manifesto-quote}}</p>
+        <div>
+          <p class="manifesto-sub">{{t:manifesto.manifesto-inner.manifesto-right.manifesto-sub}}<br><br>{{t:manifesto.manifesto-inner.manifesto-right.manifesto-sub.2}}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA FINAL + FORMULARIO -->
+<section class="cta-final" id="contacto">
+  <div class="wrap">
+    <div class="cta-final__i">
+      <h2 class="r">{{t:contacto.cta-final__i.h2}}<br>{{t:contacto.cta-final__i.h2.2}} <em>{{t:contacto.cta-final__i.em}}</em></h2>
+      <div class="cta-final__right r r-d1">
+        <p>{{t:contacto.cta-final__i.cta-final__right.p}} <strong>{{t:contacto.cta-final__i.cta-final__right.strong}}</strong> {{t:contacto.cta-final__i.cta-final__right.p.2}}</p>
+        <a class="cta-final__mailto" href="mailto:{{contact_email}}?subject={{attr:subject|contacto.mail.subject}}&amp;body={{attr:body|contacto.mail.body}}"><span aria-hidden="true">→</span> {{t:contacto.form.mailto}}</a>
+        <p style="font-family:var(--font-m);font-size:var(--tx-xxs);color:var(--ink-4);letter-spacing:.04em;">{{t:contacto.cta-final__i.cta-final__right.p.3}}</p>
+      </div>
+    </div>
+
+    <div class="cf r r-d1">
+      <div class="cf__grid">
+
+        <div class="cf__head">
+          <h3 class="cf__title">{{t:contacto.form.title}}</h3>
+          <p class="cf__intro">{{t:contacto.form.intro}}</p>
+        </div>
+
+        <form class="cf__form" id="cf-form" method="post" action="/api/contact" novalidate data-lang="{{lang}}">
+          <div class="cf__hp" aria-hidden="true">
+            <label for="cf-website">Website</label>
+            <input type="text" id="cf-website" name="website_hp" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="cf__field">
+            <label class="cf__label" for="cf-name">{{t:contacto.form.label.name}} <span class="cf__req" aria-hidden="true">*</span></label>
+            <input class="cf__input" type="text" id="cf-name" name="name" autocomplete="name" required aria-describedby="cf-name-err" placeholder="{{attr:placeholder|contacto.form.ph.name}}">
+            <span class="cf__error" id="cf-name-err" role="alert">{{t:contacto.form.err.required}}</span>
+          </div>
+
+          <div class="cf__field">
+            <label class="cf__label" for="cf-email">{{t:contacto.form.label.email}} <span class="cf__req" aria-hidden="true">*</span></label>
+            <input class="cf__input" type="email" id="cf-email" name="email" autocomplete="email" required aria-describedby="cf-email-err" placeholder="{{attr:placeholder|contacto.form.ph.email}}">
+            <span class="cf__error" id="cf-email-err" role="alert">{{t:contacto.form.err.required}}</span>
+          </div>
+
+          <div class="cf__field cf__span2">
+            <label class="cf__label" for="cf-company">{{t:contacto.form.label.company}} <span class="cf__req" aria-hidden="true">*</span></label>
+            <input class="cf__input" type="text" id="cf-company" name="company" autocomplete="organization" required aria-describedby="cf-company-err" placeholder="{{attr:placeholder|contacto.form.ph.company}}">
+            <span class="cf__error" id="cf-company-err" role="alert">{{t:contacto.form.err.required}}</span>
+          </div>
+
+          <div class="cf__field cf__span2">
+            <label class="cf__label" for="cf-problem">{{t:contacto.form.label.problem}} <span class="cf__req" aria-hidden="true">*</span></label>
+            <textarea class="cf__area" id="cf-problem" name="problem" rows="4" required minlength="20" aria-describedby="cf-problem-err cf-problem-count" placeholder="{{attr:placeholder|contacto.form.ph.problem}}"></textarea>
+            <span class="cf__count" id="cf-problem-count" data-state="idle" aria-live="off">{{t:contacto.form.count.min}}</span>
+            <span class="cf__error" id="cf-problem-err" role="alert">{{t:contacto.form.err.short}}</span>
+          </div>
+
+          <details class="cf__more cf__span2" id="cf-more">
+            <summary>{{t:contacto.form.more.open}}</summary>
+            <div class="cf__more__body">
+              <div class="cf__field">
+                <label class="cf__label" for="cf-level">{{t:contacto.form.label.level}} <span class="cf__opt">{{t:contacto.form.optional}}</span></label>
+                <select class="cf__select" id="cf-level" name="level" data-scoring="1">
+                  <option value="">{{t:contacto.form.opt.level}}</option>
+                  <option value="explore">{{t:contacto.form.opt.level.explore}}</option>
+                  <option value="experience">{{t:contacto.form.opt.level.experience}}</option>
+                  <option value="simulate">{{t:contacto.form.opt.level.simulate}}</option>
+                  <option value="connect">{{t:contacto.form.opt.level.connect}}</option>
+                </select>
+              </div>
+              <div class="cf__field">
+                <label class="cf__label" for="cf-budget">{{t:contacto.form.label.budget}} <span class="cf__opt">{{t:contacto.form.optional}}</span></label>
+                <select class="cf__select" id="cf-budget" name="budget" data-scoring="1">
+                  <option value="">{{t:contacto.form.opt.budget}}</option>
+                  <option value="lt1000">{{t:contacto.form.opt.budget.lt1000}}</option>
+                  <option value="1000-3000">{{t:contacto.form.opt.budget.1000-3000}}</option>
+                  <option value="3000-6000">{{t:contacto.form.opt.budget.3000-6000}}</option>
+                  <option value="6000-10000">{{t:contacto.form.opt.budget.6000-10000}}</option>
+                  <option value="10000plus">{{t:contacto.form.opt.budget.10000plus}}</option>
+                </select>
+              </div>
+              <div class="cf__field">
+                <label class="cf__label" for="cf-timeline">{{t:contacto.form.label.timeline}} <span class="cf__opt">{{t:contacto.form.optional}}</span></label>
+                <select class="cf__select" id="cf-timeline" name="timeline" data-scoring="1">
+                  <option value="">{{t:contacto.form.opt.timeline}}</option>
+                  <option value="lt1m">{{t:contacto.form.opt.timeline.lt1m}}</option>
+                  <option value="1-3m">{{t:contacto.form.opt.timeline.1-3m}}</option>
+                  <option value="3-6m">{{t:contacto.form.opt.timeline.3-6m}}</option>
+                  <option value="6m">{{t:contacto.form.opt.timeline.6m}}</option>
+                  <option value="explore">{{t:contacto.form.opt.timeline.explore}}</option>
+                </select>
+              </div>
+              <div class="cf__field">
+                <label class="cf__label" for="cf-decision">{{t:contacto.form.label.decision}} <span class="cf__opt">{{t:contacto.form.optional}}</span></label>
+                <select class="cf__select" id="cf-decision" name="decision_maker" data-scoring="1">
+                  <option value="">{{t:contacto.form.opt.decision}}</option>
+                  <option value="founder">{{t:contacto.form.opt.decision.founder}}</option>
+                  <option value="director">{{t:contacto.form.opt.decision.director}}</option>
+                  <option value="manager">{{t:contacto.form.opt.decision.manager}}</option>
+                  <option value="delegate">{{t:contacto.form.opt.decision.delegate}}</option>
+                  <option value="other">{{t:contacto.form.opt.decision.other}}</option>
+                </select>
+              </div>
+              <div class="cf__field cf__span2">
+                <label class="cf__label" for="cf-tools">{{t:contacto.form.label.tools}} <span class="cf__opt">{{t:contacto.form.optional}}</span></label>
+                <textarea class="cf__area" id="cf-tools" name="tools" rows="2" style="min-height:4rem" placeholder="{{attr:placeholder|contacto.form.ph.tools}}"></textarea>
+              </div>
+              <div class="cf__field cf__span2">
+                <label class="cf__label" for="cf-referral">{{t:contacto.form.label.referral}} <span class="cf__opt">{{t:contacto.form.optional}}</span></label>
+                <input class="cf__input" type="text" id="cf-referral" name="referral" placeholder="{{attr:placeholder|contacto.form.ph.referral}}">
+              </div>
+            </div>
+          </details>
+
+          <label class="cf__consent" id="cf-consent-label" for="cf-consent">
+            <input type="checkbox" id="cf-consent" name="consent_data" value="true" required aria-describedby="cf-consent-err">
+            <span>{{t:contacto.form.consent}} <a href="{{url_privacy}}">{{t:contacto.form.privacy-link}}</a>.</span>
+          </label>
+          <span class="cf__error" id="cf-consent-err" role="alert" style="grid-column:1/-1;margin-top:-.4rem">{{t:contacto.form.err.consent}}</span>
+
+          <div class="cf__actions">
+            <button class="cf__submit" type="submit" id="cf-submit">{{t:contacto.form.submit}}</button>
+            <span class="cf__note" id="cf-note">{{t:contacto.form.note}}</span>
+          </div>
+        </form>
+
+        <p class="cf__status" id="cf-status" role="status" aria-live="polite" tabindex="-1" style="grid-column:1/-1"></p>
+
+        <aside class="cf__aside" aria-label="{{t:contacto.form.aside.aria}}">
+          <h3>{{t:contacto.form.aside.title}}</h3>
+          <ul>
+            <li>{{t:contacto.form.aside.li.1}}</li>
+            <li>{{t:contacto.form.aside.li.2}}</li>
+            <li>{{t:contacto.form.aside.li.3}}</li>
+          </ul>
+          <p class="cf__note">{{t:contacto.form.aside.mail}} <a href="mailto:{{contact_email}}">{{contact_email}}</a></p>
+        </aside>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="footer"><div class="wrap"><div class="footer__i"><div style="display:flex;flex-direction:column;gap:.25rem"><span class="footer__copy">{{t:footer.footer__i.footer__copy}}</span><span class="footer__copy">{{t:footer.footer__i.footer__copy.2}}</span></div><div style="display:flex;flex-direction:column;gap:.25rem;align-items:flex-end"><nav class="footer__legal" aria-label="{{t:footer.footer__i.legal.aria}}"><a href="{{privacy_url}}">{{t:footer.footer__i.legal.privacy}}</a><a href="mailto:{{contact_email}}">{{contact_email}}</a></nav></div></div></div></footer>
+
+<script>
+const els=document.querySelectorAll('.r');
+const obs=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+els.forEach(e=>obs.observe(e));
+
+// mobile toggle
+const tog=document.querySelector('.nav__toggle'), mob=document.getElementById('mobile');
+if(tog&&mob){ tog.addEventListener('click',()=>{ const open=mob.hidden; mob.hidden=!open; tog.setAttribute('aria-expanded',String(open)); }); mob.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>{mob.hidden=true;tog.setAttribute('aria-expanded','false')})); }
+
+// nav: white on hero, glass on scroll
+const nav=document.querySelector('.nav'), heroEl=document.querySelector('.hero');
+if(nav && heroEl){
+  const onScroll=()=>{ const past = window.scrollY > heroEl.offsetHeight - 90; nav.classList.toggle('is-scrolled', past); };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+}
+// premium chrome — progress + magnetic + tilt + hero reveal + pipeline prog
+const prog=document.querySelector('.progress');
+if(prog){ const upd=()=>{ const h=document.documentElement.scrollHeight - innerHeight; prog.style.transform=`scaleX(${h>0? scrollY/h:0})`}; addEventListener('scroll', upd,{passive:true}); upd(); }
+document.querySelectorAll('.magnet').forEach(b=>{
+  b.addEventListener('mousemove', e=>{
+    const r=b.getBoundingClientRect(); const dx=(e.clientX - (r.left+r.width/2))*.22; const dy=(e.clientY - (r.top+r.height/2))*.32;
+    b.style.transform=`translate(${dx}px, ${dy}px)`; });
+  b.addEventListener('mouseleave', ()=> b.style.transform='translate(0,0)');
+});
+const hl=document.getElementById('hero-hl'); if(hl){ requestAnimationFrame(()=> requestAnimationFrame(()=> hl.classList.add('is-in'))); }
+document.querySelectorAll('.usecase-card').forEach(card=>{
+  card.addEventListener('mousemove', e=>{
+    const r=card.getBoundingClientRect(); const x=(e.clientX - r.left)/r.width - .5; const y=(e.clientY - r.top)/r.height - .5;
+    card.style.transform=`perspective(900px) rotateY(${x*6}deg) rotateX(${-y*6}deg) translateY(-4px)`;
+  });
+  card.addEventListener('mouseleave',()=> card.style.transform='');
+});
+const pipe=document.querySelector('.pipeline .steps');
+if(pipe){
+  const pipeSec=document.querySelector('.pipeline');
+  const updPipe=()=>{
+    const rect=pipeSec.getBoundingClientRect(); const h=pipeSec.offsetHeight - innerHeight*.3; const p=Math.min(1, Math.max(0, (-rect.top + innerHeight*.35)/h));
+    pipe.style.setProperty('--prog', (p*100).toFixed(1)+'%');
+  };
+  addEventListener('scroll', updPipe, {passive:true}); updPipe();
+}
+// transform — stagger reveal sutil para las 4 ventajas (sin slider)
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches){
+  const tCards=[...document.querySelectorAll('.t-card')];
+  const tObs=new IntersectionObserver(es=>{
+    es.forEach(e=>{
+      if(e.isIntersecting){
+        const i=tCards.indexOf(e.target);
+        e.target.style.transitionDelay = (i*90)+'ms';
+        e.target.classList.add('is-in');
+        tObs.unobserve(e.target);
+      }
+    });
+  },{threshold:.18});
+  tCards.forEach(c=>{ c.style.opacity='0'; c.style.transform='translateY(12px)'; c.style.transition='opacity .5s var(--ease-arch), transform .5s var(--ease-arch)'; tObs.observe(c); });
+  // cuando entran, van a opacity1
+  const style=document.createElement('style'); style.textContent='.t-card.is-in{opacity:1!important;transform:none!important}'; document.head.appendChild(style);
+}
+// faq accordion
+document.querySelectorAll('.faq-item').forEach(item=>{
+  const btn=item.querySelector('.faq-q'), panel=item.querySelector('.faq-a');
+  btn.addEventListener('click', ()=>{
+    const willOpen=!item.classList.contains('is-open');
+    document.querySelectorAll('.faq-item').forEach(i=>{
+      i.classList.remove('is-open'); i.querySelector('.faq-q').setAttribute('aria-expanded','false'); i.querySelector('.faq-q i').textContent='+'; const p=i.querySelector('.faq-a'); if(p) p.hidden=true;
+    });
+    if(willOpen){ item.classList.add('is-open'); btn.setAttribute('aria-expanded','true'); btn.querySelector('i').textContent='—'; panel.hidden=false; }
+  });
+});
+
+// industries — flechas + scroll suave (solo derecha visible al inicio)
+const indGrid=document.querySelector('.industries-grid');
+if(indGrid){
+  const indPrev=document.getElementById('ind-prev'), indNext=document.getElementById('ind-next'), indDots=document.getElementById('ind-dots');
+  const cards=[...indGrid.children];
+  // ambas visibles desde inicio
+  let dots=[];
+  if(indDots){
+    dots=cards.map((_,i)=>{
+      const b=document.createElement('button'); b.setAttribute('aria-label','Ver industria '+(i+1));
+      b.addEventListener('click',()=> cards[i].scrollIntoView({behavior:'smooth', inline:'start', block:'nearest'}));
+      indDots.appendChild(b); return b;
+    });
+  }
+  const upd=()=>{
+    if(dots.length){
+      const idx=Math.round(indGrid.scrollLeft / (cards[0].offsetWidth + 16));
+      dots.forEach((d,i)=> d.classList.toggle('is-active', i===idx));
+    }
+    // ambas flechas siempre visibles
+    indPrev.classList.remove('is-hidden');
+    indNext.classList.remove('is-hidden');
+  };
+  indGrid.addEventListener('scroll', upd, {passive:true}); upd();
+  const step = ()=> cards[0].offsetWidth + 16;
+  indPrev.addEventListener('click',()=> indGrid.scrollBy({left:-step(), behavior:'smooth'}));
+  indNext.addEventListener('click',()=> indGrid.scrollBy({left:step(), behavior:'smooth'}));
+}
+// c1 — palette #2323FF
+// cada dibujo vive en un espacio de diseño fijo de 400x160 y cvFit lo escala a la caja real
+// (con dpr), de modo que no hay deformación ni solapes por muy estrecho que sea el ancho
+const cvFit=(c,ctx,dw,dh)=>{const r=c.getBoundingClientRect(),d=Math.min(window.devicePixelRatio||1,2),w=Math.max(1,Math.round(r.width*d)),h=Math.max(1,Math.round(r.height*d));if(c.width!==w||c.height!==h){c.width=w;c.height=h}ctx.setTransform(d*r.width/dw,0,0,d*r.height/dh,0,0)};
+(function(){const c=document.getElementById('c1'),ctx=c.getContext('2d'),W=400,H=160,stages={{t:canvas.stages}},n=stages.length;let t=0;function draw(){cvFit(c,ctx,W,H);ctx.clearRect(0,0,W,H);ctx.fillStyle='#F2F3FF';ctx.fillRect(0,0,W,H);const nodeW=52,nodeH=28,margin=(W-n*nodeW)/(n+1),y=H/2;for(let i=0;i<6;i++){const f=((t*.4+i/6)%(n-1)),seg=Math.floor(f),lt=f-seg,x1=margin+seg*(nodeW+margin)+nodeW/2,x2=margin+(seg+1)*(nodeW+margin)+nodeW/2,px=x1+(x2-x1)*lt;ctx.beginPath();ctx.arc(px,y,3,0,Math.PI*2);ctx.fillStyle='rgba(35,35,255,.9)';ctx.fill()}stages.forEach((s,i)=>{const x=margin+i*(nodeW+margin);if(i<n-1){ctx.beginPath();ctx.moveTo(x+nodeW,y);ctx.lineTo(x+nodeW+margin,y);ctx.strokeStyle='rgba(17,17,133,.15)';ctx.lineWidth=1;ctx.stroke()} const act=i===Math.floor(t*.4%(n-1));ctx.fillStyle=act?'#2323FF':'#FFFFFF';ctx.strokeStyle=act?'#2323FF':'rgba(17,17,133,.18)';ctx.lineWidth=1;ctx.beginPath();ctx.roundRect(x,y-nodeH/2,nodeW,nodeH,2);ctx.fill();ctx.stroke();ctx.fillStyle=act?'#FFFFFF':'rgba(17,17,133,.7)';ctx.font='8.5px Space Mono, monospace';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(s.toUpperCase(),x+nodeW/2,y)});t++;requestAnimationFrame(draw)}try{draw()}catch(e){}})();
+// c2 — blue beam
+(function(){const c=document.getElementById('c2'),ctx=c.getContext('2d'),W=400,H=160;let t=0;function draw(){cvFit(c,ctx,W,H);ctx.clearRect(0,0,W,H);ctx.fillStyle='#F2F3FF';ctx.fillRect(0,0,W,H);const load=.5+.45*Math.sin(t*.012),cx=W/2,baseY=H*.75,beamW=W*.6;ctx.beginPath();ctx.moveTo(cx-beamW/2,baseY);ctx.lineTo(cx-beamW/2-12,baseY+20);ctx.lineTo(cx-beamW/2+12,baseY+20);ctx.closePath();ctx.fillStyle='rgba(17,17,133,.22)';ctx.fill();ctx.beginPath();ctx.moveTo(cx+beamW/2,baseY);ctx.lineTo(cx+beamW/2-12,baseY+20);ctx.lineTo(cx+beamW/2+12,baseY+20);ctx.closePath();ctx.fill();const defl=load*18;ctx.beginPath();ctx.moveTo(cx-beamW/2,baseY);ctx.quadraticCurveTo(cx,baseY+defl,cx+beamW/2,baseY);ctx.strokeStyle='rgba(17,17,133,.8)';ctx.lineWidth=3;ctx.stroke();const al=30+load*20;ctx.beginPath();ctx.moveTo(cx,baseY-al-30);ctx.lineTo(cx,baseY-30);ctx.strokeStyle='#2323FF';ctx.lineWidth=2;ctx.stroke();ctx.beginPath();ctx.moveTo(cx-6,baseY-36);ctx.lineTo(cx,baseY-26);ctx.lineTo(cx+6,baseY-36);ctx.strokeStyle='#2323FF';ctx.lineWidth=2;ctx.stroke();ctx.font='9.5px Space Mono, monospace';ctx.fillStyle='#2323FF';ctx.textAlign='center';ctx.textBaseline='bottom';ctx.fillText((load*100).toFixed(0)+' kN',cx,baseY-al-32);for(let x=0;x<beamW;x+=4){const sx=cx-beamW/2+x,stress=4*(x/beamW)*(1-x/beamW)*load,by=baseY+(4*(x/beamW)*(1-x/beamW))*defl;ctx.beginPath();ctx.arc(sx,by,2.5,0,Math.PI*2);ctx.fillStyle=`rgba(35,35,255,${stress*.5})`;ctx.fill()}t++;requestAnimationFrame(draw)}try{draw()}catch(e){}})();
+// c3 — exploded blue
+(function(){const c=document.getElementById('c3'),ctx=c.getContext('2d'),W=400,H=160;let t=0,hover=-1;const parts=[{label:{{t:canvas.part.casing}},w:80,h:28},{label:{{t:canvas.part.rotor}},w:44,h:44,circ:true},{label:{{t:canvas.part.impeller}},w:30,h:30,circ:true},{label:{{t:canvas.part.seal}},w:8,h:8},{label:{{t:canvas.part.base}},w:80,h:10}];function draw(){cvFit(c,ctx,W,H);ctx.clearRect(0,0,W,H);ctx.fillStyle='#F2F3FF';ctx.fillRect(0,0,W,H);const cx=W/2,cy=H/2,spread=.5+.5*Math.sin(t*.008),offs=[[0,-30*spread],[0,0],[0,18*spread],[-30*spread,0],[0,28*spread]];parts.forEach((p,i)=>{const [ox,oy]=offs[i],px=cx+ox,py=cy+oy;ctx.save();if(p.circ){ctx.beginPath();ctx.arc(px,py,p.w/2,0,Math.PI*2);ctx.fillStyle=i===hover?'#2323FF':'#FFFFFF';ctx.strokeStyle=i===hover?'#2323FF':'rgba(17,17,133,.22)';ctx.lineWidth=1.5;ctx.fill();ctx.stroke()}else{ctx.fillStyle=i===hover?'rgba(35,35,255,.12)':'rgba(17,17,133,.05)';ctx.strokeStyle=i===hover?'#2323FF':'rgba(17,17,133,.22)';ctx.lineWidth=1.5;ctx.beginPath();ctx.roundRect(px-p.w/2,py-p.h/2,p.w,p.h,2);ctx.fill();ctx.stroke()}if(spread>.3){ctx.strokeStyle='rgba(17,17,133,.14)';ctx.lineWidth=.5;ctx.setLineDash([3,3]);ctx.beginPath();ctx.moveTo(px+p.w/2+4,py);ctx.lineTo(px+p.w/2+24,py);ctx.stroke();ctx.setLineDash([]);ctx.font='8.5px Space Mono, monospace';ctx.fillStyle='rgba(17,17,133,.55)';ctx.textAlign='left';ctx.textBaseline='middle';ctx.fillText(p.label.toUpperCase(),px+p.w/2+28,py)}ctx.restore()});t++;hover=Math.floor(t/80)%parts.length;requestAnimationFrame(draw)}try{draw()}catch(e){}})();
+// c4 — gradient descent blue
+(function(){const c=document.getElementById('c4'),ctx=c.getContext('2d'),W=400,H=160;let t=0;function loss(x,y){return .5*(x*x+3*y*y)+.3*Math.sin(x*2)*Math.cos(y)}function draw(){cvFit(c,ctx,W,H);ctx.clearRect(0,0,W,H);ctx.fillStyle='#F2F3FF';ctx.fillRect(0,0,W,H);const step=8;for(let px=0;px<W;px+=step) for(let py=0;py<H;py+=step){const x=(px/W-.5)*6,y=(py/H-.5)*6,v=loss(x,y),a=Math.max(0,.09-v*.006);ctx.fillStyle=`rgba(35,35,255,${a})`;ctx.fillRect(px,py,step,step)}const path=[];let gx=2.5-(t*.003%5),gy=1.8-(t*.003%3.6);const lr=.15;for(let i=0;i<40;i++){const eps=.01,gxg=(loss(gx+eps,gy)-loss(gx-eps,gy))/(2*eps),gyg=(loss(gx,gy+eps)-loss(gx,gy-eps))/(2*eps);gx-=lr*gxg;gy-=lr*gyg;path.push({px:(gx/6+.5)*W,py:(gy/6+.5)*H,v:loss(gx,gy)})}ctx.beginPath();path.forEach((p,i)=>{i===0?ctx.moveTo(p.px,p.py):ctx.lineTo(p.px,p.py)});ctx.strokeStyle='rgba(35,35,255,.55)';ctx.lineWidth=1.5;ctx.stroke();const idx=Math.floor(t*.5)%path.length,cp=path[idx];ctx.beginPath();ctx.arc(cp.px,cp.py,5,0,Math.PI*2);ctx.fillStyle='#2323FF';ctx.fill();ctx.font='8.5px Space Mono, monospace';ctx.fillStyle='rgba(17,17,133,.55)';ctx.textAlign='left';ctx.textBaseline='top';ctx.fillText('GRADIENT DESCENT',12,12);ctx.fillStyle='#2323FF';ctx.fillText('LOSS: '+path[path.length-1].v.toFixed(4),12,24);t++;requestAnimationFrame(draw)}try{draw()}catch(e){}})();
+// ─── Formulario de contacto ────────────────────────────────────────
+(function(){
+  const form=document.getElementById('cf-form');
+  if(!form) return;
+  const status=document.getElementById('cf-status');
+  const submit=document.getElementById('cf-submit');
+  const problem=document.getElementById('cf-problem');
+  const counter=document.getElementById('cf-problem-count');
+  const more=document.getElementById('cf-more');
+  const consentLabel=document.getElementById('cf-consent-label');
+  const MIN=20, KEY_UTM='le_utm', KEY_LEVEL='le_level';
+  const IS_EN = form.dataset.lang==='en';
+
+  // Un solo sitio para los textos: los tokens del build llegan ya traducidos.
+  const T={
+    submit:'{{t:contacto.form.submit}}', sending:'{{t:contacto.form.submitting}}',
+    sendingNow:'{{t:contacto.form.status.sending}}',
+    okTitle:'{{t:contacto.form.status.ok.title}}', okBody:'{{t:contacto.form.status.ok.body}}',
+    errTitle:'{{t:contacto.form.status.err.title}}', errBody:'{{t:contacto.form.status.err.body}}',
+    rate:'{{t:contacto.form.status.err.rate}}',
+    countMin:'{{t:contacto.form.count.min}}', countOk:'{{t:contacto.form.count.ok}}',
+    eRequired:'{{t:contacto.form.err.required}}', eInvalid:'{{t:contacto.form.err.invalid}}',
+    eShort:'{{t:contacto.form.err.short}}', eConsent:'{{t:contacto.form.err.consent}}',
+  };
+  const byCode={required:T.eRequired, invalid:T.eInvalid, short:T.eShort, consent:T.eConsent};
+
+  const store={
+    get(k){ try{ return sessionStorage.getItem(k); }catch(e){ return null; } },
+    set(k,v){ try{ sessionStorage.setItem(k,v); }catch(e){} }
+  };
+
+  function utm(){
+    let saved=null;
+    try{ saved=JSON.parse(sessionStorage.getItem(KEY_UTM)||'null'); }catch(e){}
+    if(saved) return saved;
+    const params=new URLSearchParams(location.search), out={};
+    for(const k of ['utm_source','utm_medium','utm_campaign','utm_term','utm_content','gclid'])
+      if(params.get(k)) out[k]=params.get(k);
+    store.set(KEY_UTM, JSON.stringify(out));
+    return out;
+  }
+
+  // Prefijar el nivel con el pricing convierte un lead genérico en intención declarada.
+  const preselected=store.get(KEY_LEVEL);
+  if(preselected){
+    const sel=form.elements.level;
+    if(sel && [...sel.options].some(o=>o.value===preselected)){
+      sel.value=preselected; more.open=true;
+    }
+  }
+  document.querySelectorAll('.price__cta a[data-level]').forEach(a=>{
+    a.addEventListener('click',()=>store.set(KEY_LEVEL,a.dataset.level));
+  });
+
+  function valueOf(name){
+    const el=form.elements[name];
+    if(!el) return '';
+    return el.type==='checkbox' ? (el.checked?'true':'') : el.value.trim();
+  }
+
+  function fieldOf(el){ return el.closest('.cf__field') || (el.id==='cf-consent'?consentLabel:null); }
+  function errorElOf(el){
+    const wrap=fieldOf(el);
+    if(!wrap) return null;
+    const described=el.getAttribute('aria-describedby')||'';
+    return described ? document.getElementById(described.split(' ')[0]) : null;
+  }
+
+  function markInvalid(el, msg){
+    const wrap=fieldOf(el);
+    const err=errorElOf(el);
+    if(wrap) wrap.classList.add('is-invalid');
+    if(err && msg) err.textContent=msg;
+    if(el.setAttribute) el.setAttribute('aria-invalid','true');
+  }
+  function clearInvalid(el){
+    const wrap=fieldOf(el);
+    const err=errorElOf(el);
+    if(wrap) wrap.classList.remove('is-invalid');
+    if(err) err.textContent='';
+    if(el.setAttribute) el.removeAttribute('aria-invalid');
+  }
+  function clearAll(){
+    form.querySelectorAll('.cf__input,.cf__select,.cf__area,#cf-consent').forEach(clearInvalid);
+    if(consentLabel) consentLabel.classList.remove('is-invalid');
+  }
+
+  const RULES={
+    name:v=> v ? '' : 'required',
+    email:v=> !v ? 'required' : (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) ? '' : 'invalid'),
+    company:v=> v ? '' : 'required',
+    problem:v=> !v ? 'required' : (v.length<MIN ? 'short' : ''),
+    consent_data:v=> v ? '' : 'consent',
+  };
+
+  function updateCounter(){
+    if(!counter) return;
+    const len=problem.value.trim().length;
+    if(len>=MIN){ counter.dataset.state='ok'; counter.textContent=T.countOk; }
+    else{ counter.dataset.state=len?'warn':'idle'; counter.textContent=T.countMin; }
+  }
+  if(problem){
+    problem.addEventListener('input',()=>{
+      updateCounter();
+      if(fieldOf(problem) && fieldOf(problem).classList.contains('is-invalid') && problem.value.trim().length>=MIN)
+        clearInvalid(problem);
+    });
+    updateCounter();
+  }
+
+  // Marcar en rojo mientras escribe solo cuando ya se le marcó: no se yellonea
+  // a quien todavía no ha tocado el campo.
+  ['name','email','company'].forEach(name=>{
+    const el=form.elements[name];
+    if(!el) return;
+    el.addEventListener('blur',()=>{
+      const code=RULES[name](valueOf(name));
+      code ? markInvalid(el, byCode[code]) : clearInvalid(el);
+    });
+    el.addEventListener('input',()=>{ if(fieldOf(el) && fieldOf(el).classList.contains('is-invalid')) clearInvalid(el); });
+  });
+  const consent=document.getElementById('cf-consent');
+  if(consent){
+    consent.addEventListener('change',()=>{
+      if(consent.checked){ clearInvalid(consent); if(consentLabel) consentLabel.classList.remove('is-invalid'); }
+    });
+  }
+
+  function setStatus(state, html){
+    if(!status) return;
+    if(state){ status.dataset.state=state; status.innerHTML=html; }
+    else{ delete status.dataset.state; status.textContent=''; }
+  }
+
+  form.addEventListener('submit',async function(e){
+    e.preventDefault();
+    clearAll(); setStatus('');
+
+    let firstBad=null;
+    for(const name in RULES){
+      const el=form.elements[name];
+      if(!el) continue;
+      const code=RULES[name](valueOf(name));
+      if(code){
+        markInvalid(el, byCode[code]);
+        if(name==='consent_data' && consentLabel) consentLabel.classList.add('is-invalid');
+        if(!firstBad) firstBad=el;
+      }
+    }
+    if(firstBad){
+      setStatus('error','<strong>'+T.errTitle+'</strong>'+T.errBody);
+      firstBad.focus();
+      return;
+    }
+
+    submit.disabled=true; submit.textContent=T.sending;
+    setStatus('sending', T.sendingNow);
+
+    const payload={
+      name:valueOf('name'), email:valueOf('email'), company:valueOf('company'),
+      problem:valueOf('problem'), level:valueOf('level'), budget:valueOf('budget'),
+      timeline:valueOf('timeline'), decision_maker:valueOf('decision_maker'),
+      tools:valueOf('tools'), referral:valueOf('referral'),
+      consent_data:valueOf('consent_data')==='true',
+      lang: IS_EN ? 'en' : 'es',
+      source:'{{t:contacto.form.source}}',
+      url:location.href, referrer:document.referrer||'',
+      timestamp:new Date().toISOString(),
+      utm:utm(),
+      website_hp:valueOf('website_hp'),
+    };
+
+    try{
+      const res=await fetch(form.action,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      let data={};
+      try{ data=await res.json(); }catch(err){}
+
+      if(res.status===422 && data.errors){
+        let target=null;
+        for(const name in data.errors){
+          const el=form.elements[name];
+          if(!el) continue;
+          markInvalid(el, byCode[data.errors[name]]||T.eRequired);
+          if(name==='consent_data' && consentLabel) consentLabel.classList.add('is-invalid');
+          if(!target) target=el;
+        }
+        setStatus('error','<strong>'+T.errTitle+'</strong>'+T.errBody);
+        if(target) target.focus();
+        return;
+      }
+
+      if(res.status===429){ setStatus('error','<strong>'+T.errTitle+'</strong>'+T.rate); return; }
+      if(!res.ok){ setStatus('error','<strong>'+T.errTitle+'</strong>'+T.errBody); return; }
+
+      // Éxito: el formulario deja de estorbar y el mensaje queda donde estaba el campo.
+      form.hidden=true; if(more) more.hidden=true;
+      setStatus('ok','<strong>'+T.okTitle+'</strong>'+T.okBody);
+      if(status) status.focus();
+    }catch(err){
+      setStatus('error','<strong>'+T.errTitle+'</strong>'+T.errBody);
+    }finally{
+      submit.disabled=false; submit.textContent=T.submit;
+    }
+  });
+})();
+
+</script>
+</body>
+</html>
