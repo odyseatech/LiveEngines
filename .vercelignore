@@ -1,0 +1,11 @@
+# Demo 3D independiente (AI Studio / Vite) — el sitio no lo referencia.
+engine/
+# Ruido de Windows
+*.Zone.Identifier
+# Documentos internos de trabajo
+liveengines_prd.md
+terminal-industries-design-system.md
+# Fuentes de build: el HTML generado ya va commiteado, no se compila en Vercel.
+i18n/
+tools/
+build.mjs
